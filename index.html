@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>우리에게 남겨진 말들</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>우리에게 남겨진 말들 · 관리자키</title><style>
 :root{--bg:#f4efe7;--paper:#fffdf9;--ink:#27221d;--mut:#766f67;--line:#e6d9cc;--accent:#5c736b;--warm:#d79370}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 100% 0,#eed9cf 0,transparent 28%),radial-gradient(circle at 0 70%,#dde8e2 0,transparent 24%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
 button,input,textarea{font:inherit}.screen{display:none;min-height:100svh;padding:22px}.screen.on{display:flex}.inner{width:min(100%,680px);margin:auto}.eyebrow{font-size:10px;letter-spacing:.18em;font-weight:800;opacity:.5}
@@ -114,6 +114,8 @@ h1,h2{font-weight:900;text-wrap:balance}
  .letters{gap:13px}
 }
 
+
+.admin-label{display:block;font-size:11px;font-weight:800;color:var(--mut);margin:10px 0 6px}
 
 /* ===== v5 visual redesign ===== */
 :root{
@@ -644,6 +646,83 @@ h2{
 }
 
 
+/* admin UI v2 */
+.admin-ui{max-width:720px;padding-bottom:60px}
+.admin-hero{margin-bottom:22px}
+.admin-hero p{margin-top:4px}
+.admin-group{
+  margin:18px 0;
+  padding:16px;
+  border-radius:22px;
+  background:rgba(255,250,243,.72);
+  border:1px solid rgba(214,197,181,.92);
+  box-shadow:0 12px 28px rgba(70,52,38,.05);
+}
+.admin-group-head{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding-bottom:12px;
+  margin-bottom:6px;
+  border-bottom:1px solid rgba(130,110,90,.08);
+}
+.admin-group-head>span{
+  width:32px;height:32px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#2c2722;color:#fff;
+  font-size:10px;font-weight:900;
+}
+.admin-group-head b{display:block;font-size:17px}
+.admin-group-head small{display:block;margin-top:2px;color:#9a8f86;font-size:10px}
+.setting-row{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px dashed rgba(145,125,107,.16);
+}
+.setting-row:last-child{border-bottom:0}
+.setting-row strong{display:block;font-size:14px}
+.setting-row span{display:block;margin-top:4px;color:#93877d;font-size:10px;line-height:1.55}
+.setting-btn{
+  flex:0 0 auto;
+  border:1px solid #dac9ba;
+  background:#fffaf4;
+  border-radius:13px;
+  padding:9px 12px;
+  color:#443c35;
+  font-size:11px;
+  font-weight:800;
+}
+.danger-lite strong{color:#8e5145}
+.key-status-card{
+  margin:10px 0 4px;
+  padding:14px;
+  border-radius:16px;
+  background:#eef5f1;
+  border:1px solid #d8e6df;
+}
+.key-status-card>div{display:flex;align-items:center;gap:8px}
+.key-status-card strong{font-size:12px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#6b8d80;box-shadow:0 0 0 5px rgba(107,141,128,.12)}
+.key-status-card code{display:block;margin-top:8px;color:#7a726b;font-size:10px;word-break:break-all}
+.modal-card{max-width:560px}
+.modal-card input{margin-top:8px}
+.device-item{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:14px 0;border-bottom:1px dashed rgba(145,125,107,.16)
+}
+.device-item b{display:block}.device-item span{display:block;font-size:10px;color:#90867e;margin-top:3px}
+.device-item em{font-style:normal;font-size:10px;color:#6d867b}
+.fake-url,.dropzone{
+  margin:16px 0;padding:15px;border-radius:15px;background:#fffaf4;border:1px dashed #cfbdaa;
+  font-size:11px;color:#655b53;word-break:break-all
+}
+.dropzone{text-align:center;padding:28px 15px}
+.danger-btn{background:#7e4338!important}
+
+
 /* v12 neutral ivory + sage palette */
 :root{
   --bg:#f1f0eb!important;
@@ -699,6 +778,15 @@ body:after{opacity:.08!important}
 .btn.secondary{background:#e6e7e1!important;border-color:#d5d7cf!important}
 .fab{border-color:rgba(241,240,235,.92)!important}
 
+
+/* unified final */
+#inbox .eyebrow{display:inline-flex;align-items:center}
+#inbox .eyebrow:after{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:#71877d;box-shadow:0 0 0 4px rgba(113,135,125,.12);
+  margin-left:8px
+}
+
 </style></head><body>
 <section id="open" class="screen on">
   <div class="inner opening-inner">
@@ -723,58 +811,433 @@ body:after{opacity:.08!important}
     </div>
   </div>
 </section>
-<section id="lock" class="screen"><div class="inner"><div class="eyebrow">ONLY US</div><h2>우리만 아는 번호</h2><p>우리 둘만 알면 돼.</p><input id="pinInput" class="pin" inputmode="numeric" maxlength="12" placeholder="••••••"><div id="pinErr" class="notice"></div><button class="btn" onclick="checkPin('inbox')">들어가기</button></div></section>
+<section id="lock" class="screen"><div class="inner"><div class="eyebrow">ONLY US</div><h2>우리만 아는 번호</h2><input id="pinInput" class="pin" inputmode="numeric" maxlength="12" placeholder="••••••"><div id="pinErr" class="notice"></div><button class="btn" onclick="checkPin('inbox')">들어가기</button></div></section>
 
-<section id="inbox" class="screen"><div class="inner"><div class="top"><div><div class="eyebrow">OUR LETTERS · ONLINE</div><h2 style="margin:6px 0 0">우리 편지함</h2></div><div class="mini" onclick="show('lock')">닫기</div></div><div class="archive-intro">
+<section id="inbox" class="screen"><div class="inner"><div class="top"><div><div class="eyebrow">OUR LETTERS · ONLINE</div><h2 id="adminTap" style="margin:6px 0 0">우리 편지함</h2></div><div class="mini" onclick="show('lock')">닫기</div></div><div class="archive-intro">
           <div id="archiveMood" class="archive-mood"></div>
           <div id="archiveCount" class="archive-count"></div>
         </div>
         <div id="memorySpot" class="memory-spot"></div>
         <div id="letterList" class="letters"></div></div><button class="fab" onclick="show('write')">＋</button></section>
 <section id="write" class="screen"><div class="inner"><div class="eyebrow">FOR YOU</div><h2>오늘 남기고 싶은 말</h2><input id="letterTitle" placeholder="제목 (선택)"><textarea id="letterBody" placeholder="짧아도 되고, 길어도 돼."></textarea><div id="writeErr" class="notice"></div><button class="btn" onclick="saveLetter()">남겨두기</button><button class="btn secondary" onclick="show('inbox')">다음에 쓸게</button></div></section>
+<section id="adminLock" class="screen"><div class="inner"><div class="eyebrow">ADMIN KEY</div><h2>관리자 닫기</h2><p>이건 너한테는 안 보이는 문.</p><input id="adminPin" class="pin" inputmode="numeric" placeholder="비밀 번호"><div id="adminErr" class="notice"></div><button class="btn" onclick="if(adminPin.value==='482915'){show('admin');loadAdminNames();}else adminErr.textContent='비밀 번호이 맞지 않아요.'">관리자 모드 들어가기</button><button class="btn secondary" onclick="show('inbox')">돌아갈게</button></div></section>
+
+<section id="admin" class="screen">
+  <div class="inner admin-ui">
+    <div class="admin-hero">
+      <div class="eyebrow"><span class="admin-dot"></span>PRIVATE ADMIN</div>
+      <h2>숨은 설정</h2>
+      <p>평소엔 안 보여도 돼. 필요할 때만 꺼내보는 곳.</p>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>01</span>
+        <div>
+          <b>편지함 설정</b>
+          <small>둘의 이름과 잠금번호</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>두 사람 이름</strong>
+          <span>편지에 보이는 이름을 바꿔.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('nameSettings')">열기</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>편지함 PIN</strong>
+          <span>둘만 아는 번호를 바꿔.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('pinSettings')">변경</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>02</span>
+        <div>
+          <b>보안</b>
+          <small>혹시 모를 때를 위한 것들</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>관리자 PIN</strong>
+          <span>이 숨은 화면을 여는 번호.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('adminPinSettings')">변경</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>접속 기기</strong>
+          <span>최근 들어온 기기를 확인해.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('devices')">보기</button>
+      </div>
+
+      <div class="setting-row danger-lite">
+        <div>
+          <strong>모든 기기 로그아웃</strong>
+          <span>다시 PIN을 입력해야 들어올 수 있게.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('logoutAll')">실행</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>03</span>
+        <div>
+          <b>키링</b>
+          <small>NFC 주소 관리</small>
+        </div>
+      </div>
+
+      <div class="key-status-card">
+        <div>
+          <span class="status-dot"></span>
+          <strong>현재 주소 사용 중</strong>
+        </div>
+        <code>…/r/7Kx9-Qm2p</code>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>새 주소 발급</strong>
+          <span>키링을 잃어버렸거나 새로 바꿀 때.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('newAddress')">만들기</button>
+      </div>
+
+      <div class="setting-row danger-lite">
+        <div>
+          <strong>기존 주소 폐기</strong>
+          <span>지금 주소로는 더 이상 못 들어오게.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('revokeAddress')">폐기</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>04</span>
+        <div>
+          <b>기록</b>
+          <small>혹시 몰라서 챙겨두는 곳</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>백업</strong>
+          <span>지금까지의 편지를 따로 보관해.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('backup')">내보내기</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>복원</strong>
+          <span>백업해둔 기록을 다시 가져와.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('restore')">가져오기</button>
+      </div>
+    </div>
+
+    <button class="btn" type="button" onclick="show('inbox')">편지함으로</button>
+  </div>
+</section>
+
+<section id="nameSettings" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">NAMES</div><h2>두 사람 이름</h2>
+  <p>편지에 보이는 이름만 바뀌어.</p>
+  <label class="admin-label">내 이름</label>
+  <input value="삼대">
+  <label class="admin-label">상대방 이름</label>
+  <input value="나">
+  <button class="btn">저장</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="pinSettings" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">LETTER PIN</div><h2>편지함 PIN</h2>
+  <input class="pin" placeholder="새 PIN">
+  <button class="btn">바꾸기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="adminPinSettings" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">ADMIN PIN</div><h2>관리자 PIN</h2>
+  <input class="pin" placeholder="현재 PIN">
+  <input class="pin" style="margin-top:10px" placeholder="새 PIN">
+  <button class="btn">바꾸기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="devices" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">DEVICES</div><h2>접속 기기</h2>
+  <div class="device-item"><div><b>내 폰</b><span>방금 전 접속</span></div><em>현재 기기</em></div>
+  <div class="device-item"><div><b>상대 폰</b><span>어제 접속</span></div><em>정상</em></div>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="logoutAll" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">SIGN OUT</div><h2>모든 기기에서 나갈까?</h2>
+  <p>다음에 들어올 땐 둘 다 다시 PIN을 입력해야 해.</p>
+  <button class="btn">모두 로그아웃</button>
+  <button class="btn secondary" onclick="show('admin')">취소</button>
+</div></section>
+
+<section id="newAddress" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">NEW NFC URL</div><h2>새 주소 만들기</h2>
+  <p>새 주소를 만들면 새 키링에 다시 넣으면 돼.</p>
+  <div class="fake-url">https://ourletters.kr/r/Q8m2-Lx7p</div>
+  <button class="btn">새 주소 발급</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="revokeAddress" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">REVOKE</div><h2>기존 주소를 폐기할까?</h2>
+  <p>폐기하면 지금 키링 주소로는 더 이상 들어올 수 없어.</p>
+  <button class="btn danger-btn">기존 주소 폐기</button>
+  <button class="btn secondary" onclick="show('admin')">취소</button>
+</div></section>
+
+<section id="backup" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">BACKUP</div><h2>기록 백업</h2>
+  <p>지금까지 남긴 편지를 한 번에 챙겨둘 수 있어.</p>
+  <button class="btn">백업 파일 만들기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="restore" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">RESTORE</div><h2>기록 복원</h2>
+  <p>예전에 백업해둔 파일을 다시 가져오면 돼.</p>
+  <div class="dropzone">백업 파일 선택</div>
+  <button class="btn">복원하기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
 <script>
 const SUPABASE_REST="https://bglhywysdhulofizpiuz.supabase.co/rest/v1";
 const SUPABASE_KEY="sb_publishable_vy75HU6LYmLOdBkuZh9l6w_J0PA5xlk";
-const ROOM_TOKEN="ad7162607e27e640c67e39d90e564bdaecb9efb3ecc38477";
-const FIXED_SENDER="\uc0c1\ub300";
-const PIN_SESSION_KEY='ourletters_pin_session_v1';
-const NAME_ME_KEY='ourletters_me_name_v1';
-const NAME_PARTNER_KEY='ourletters_partner_name_v1';
+const PIN_SESSION_KEY='ourletters_pin_session_v2';
+const NAME_ME_KEY='ourletters_me_name_v2';
+const NAME_PARTNER_KEY='ourletters_partner_name_v2';
 
-function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));const el=document.getElementById(id);if(el)el.classList.add('on');scrollTo(0,0)}
-function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
-function getDisplayName(role){if(role==='나')return localStorage.getItem(NAME_ME_KEY)||'나';if(role==='상대')return localStorage.getItem(NAME_PARTNER_KEY)||'상대';return role||''}
-function relativeAgo(ts){const d=Math.floor(Math.max(0,Date.now()-new Date(ts).getTime())/86400000);if(d<=0)return '오늘';if(d===1)return '어제';if(d<30)return d+'일 전';const m=Math.floor(d/30);if(m<12)return m+'개월 전';return Math.floor(d/365)+'년 전'}
-function headers(){return {apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}}
-async function rpc(name,body){const r=await fetch(SUPABASE_REST+'/rpc/'+name,{method:'POST',headers:headers(),body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());return await r.json()}
+let ROOM_TOKEN='';
+let ACCESS_TYPE=null;
+
+function getTokenFromHash(){
+  const raw=(location.hash||'').replace(/^#/,'').trim();
+  return raw;
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('on');
+  scrollTo(0,0);
+}
+
+function esc(s){
+  return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+
+function getDisplayName(role){
+  if(role==='나')return localStorage.getItem(NAME_ME_KEY)||'나';
+  if(role==='상대')return localStorage.getItem(NAME_PARTNER_KEY)||'상대';
+  return role||'';
+}
+
+function relativeAgo(ts){
+  const d=Math.floor(Math.max(0,Date.now()-new Date(ts).getTime())/86400000);
+  if(d<=0)return '오늘';
+  if(d===1)return '어제';
+  if(d<30)return d+'일 전';
+  const m=Math.floor(d/30);
+  if(m<12)return m+'개월 전';
+  return Math.floor(d/365)+'년 전';
+}
+
+function headers(){
+  return {
+    'apikey':SUPABASE_KEY,
+    'Authorization':'Bearer '+SUPABASE_KEY,
+    'Content-Type':'application/json'
+  };
+}
+
+async function rpc(name,body){
+  const r=await fetch(SUPABASE_REST+'/rpc/'+name,{
+    method:'POST',
+    headers:headers(),
+    body:JSON.stringify(body)
+  });
+  if(!r.ok)throw new Error(await r.text());
+  return await r.json();
+}
+
 async function checkPin(next){
-  const pin=document.getElementById('pinInput').value.trim(),err=document.getElementById('pinErr');
-  if(!pin){err.textContent='번호를 입력해줘.';return}
+  const pin=document.getElementById('pinInput').value.trim();
+  const err=document.getElementById('pinErr');
+  if(!ROOM_TOKEN){
+    err.textContent='이 키링의 주소가 아직 준비되지 않았어.';
+    return;
+  }
+  if(!pin){
+    err.textContent='번호를 입력해줘.';
+    return;
+  }
   try{
     const rows=await rpc('verify_room_access',{p_token:ROOM_TOKEN,p_pin:pin});
-    if(rows.length){sessionStorage.setItem(PIN_SESSION_KEY,pin);localStorage.setItem(NAME_ME_KEY,rows[0].person_a_name||'나');localStorage.setItem(NAME_PARTNER_KEY,rows[0].person_b_name||'상대');await renderLetters();show(next)}
-    else err.textContent='번호가 맞지 않아.';
-  }catch(e){console.error(e);err.textContent='잠깐 문제가 생겼어. 다시 해봐.'}
-}
-async function loadLetters(){const pin=sessionStorage.getItem(PIN_SESSION_KEY);if(!pin)return [];return await rpc('get_letters',{p_token:ROOM_TOKEN,p_pin:pin})}
-async function renderLetters(){
-  const box=document.getElementById('letterList');if(!box)return;
-  try{
-    const list=(await loadLetters()).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-    const mood=document.getElementById('archiveMood'),count=document.getElementById('archiveCount'),memory=document.getElementById('memorySpot');
-    if(mood)mood.textContent=list.length<=1?'첫 번째 말을 남긴 날부터':list.length<8?'조금씩, 우리의 말이 쌓이고 있어.':list.length<20?'말하지 못한 것들이 제법 쌓였다.':'우리도 꽤 많은 시간을 여기 남겼네.';
-    if(count)count.textContent=list.length?'지금까지 서로에게 남긴 편지 '+list.length+'개':'아직 첫 편지를 기다리는 중';
-    if(memory){if(list.length>=8){const old=list[list.length-1];memory.innerHTML='<div class="memory-label">그때 우리가 남긴 말</div><div class="memory-card"><div class="memory-date">'+relativeAgo(old.created_at)+'</div><b>'+esc(old.title||'그날의 말')+'</b><p>'+esc((old.body||'').replace(/\n/g,' ').slice(0,70))+((old.body||'').length>70?'…':'')+'</p></div>'}else memory.innerHTML=''}
-    if(!list.length){box.innerHTML='<div class="card"><p>아직 남겨진 편지가 없어.<br>첫 번째 말을 남겨볼까.</p></div>';return}
-    let html='';
-    list.forEach((x,i)=>{html+='<article class="letter '+(x.sender==='나'?'mine':'theirs')+'"><div class="letter-head"><div class="sender-badge">'+esc(getDisplayName(x.sender))+'</div><time>'+new Date(x.created_at).toLocaleString('ko-KR')+'</time></div><h3>'+esc(x.title||'오늘 남긴 말')+'</h3><p>'+esc(x.body)+'</p></article>';if(i<list.length-1){const days=Math.floor((new Date(x.created_at)-new Date(list[i+1].created_at))/86400000);if(days>=2)html+='<div class="time-gap"><span>그리고 '+days+'일 뒤,</span></div>'}});
-    box.innerHTML=html;
-  }catch(e){console.error(e);box.innerHTML='<div class="card"><p>편지를 불러오지 못했어.<br>잠깐 뒤에 다시 열어봐.</p></div>'}
-}
-async function saveLetter(){
- const title=document.getElementById('letterTitle').value.trim(),body=document.getElementById('letterBody').value.trim(),err=document.getElementById('writeErr'),pin=sessionStorage.getItem(PIN_SESSION_KEY);
- if(!body){err.textContent='한 줄만 남겨도 돼.';return} if(!pin){show('lock');return}
- try{await rpc('add_letter',{p_token:ROOM_TOKEN,p_pin:pin,p_sender:FIXED_SENDER,p_title:title,p_body:body});document.getElementById('letterTitle').value='';document.getElementById('letterBody').value='';err.textContent='';await renderLetters();show('inbox')}catch(e){console.error(e);err.textContent='저장이 안 됐어. 다시 한번 해봐.'}
+    if(Array.isArray(rows)&&rows.length){
+      ACCESS_TYPE=rows[0].access_type;
+      sessionStorage.setItem(PIN_SESSION_KEY,pin);
+      localStorage.setItem(NAME_ME_KEY,rows[0].person_a_name||'나');
+      localStorage.setItem(NAME_PARTNER_KEY,rows[0].person_b_name||'상대');
+      err.textContent='';
+      await renderLetters();
+      show(next);
+    }else{
+      err.textContent='번호가 맞지 않아.';
+    }
+  }catch(e){
+    console.error(e);
+    err.textContent='잠깐 문제가 생겼어. 다시 해봐.';
+  }
 }
 
+async function loadLetters(){
+  const pin=sessionStorage.getItem(PIN_SESSION_KEY);
+  if(!pin||!ROOM_TOKEN)return [];
+  return await rpc('get_letters',{p_token:ROOM_TOKEN,p_pin:pin});
+}
+
+async function renderLetters(){
+  const box=document.getElementById('letterList');
+  if(!box)return;
+  try{
+    const list=(await loadLetters()).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    const mood=document.getElementById('archiveMood');
+    const count=document.getElementById('archiveCount');
+    const memory=document.getElementById('memorySpot');
+
+    if(mood){
+      mood.textContent=list.length<=1?'첫 번째 말을 남긴 날부터':
+                       list.length<8?'조금씩, 우리의 말이 쌓이고 있어.':
+                       list.length<20?'말하지 못한 것들이 제법 쌓였다.':
+                       '우리도 꽤 많은 시간을 여기 남겼네.';
+    }
+
+    if(count){
+      count.textContent=list.length?'지금까지 서로에게 남긴 편지 '+list.length+'개':'아직 첫 편지를 기다리는 중';
+    }
+
+    if(memory){
+      if(list.length>=8){
+        const old=list[list.length-1];
+        memory.innerHTML=
+          '<div class="memory-label">그때 우리가 남긴 말</div>'+
+          '<div class="memory-card">'+
+          '<div class="memory-date">'+relativeAgo(old.created_at)+'</div>'+
+          '<b>'+esc(old.title||'그날의 말')+'</b>'+
+          '<p>'+esc((old.body||'').replace(/\n/g,' ').slice(0,70))+((old.body||'').length>70?'…':'')+'</p>'+
+          '</div>';
+      }else{
+        memory.innerHTML='';
+      }
+    }
+
+    if(!list.length){
+      box.innerHTML='<div class="card"><p>아직 남겨진 편지가 없어.<br>첫 번째 말을 남겨볼까.</p></div>';
+      return;
+    }
+
+    let html='';
+    list.forEach((x,i)=>{
+      html+='<article class="letter '+(x.sender==='나'?'mine':'theirs')+'">'+
+        '<div class="letter-head">'+
+        '<div class="sender-badge">'+esc(getDisplayName(x.sender))+'</div>'+
+        '<time>'+new Date(x.created_at).toLocaleString('ko-KR')+'</time>'+
+        '</div>'+
+        '<h3>'+esc(x.title||'오늘 남긴 말')+'</h3>'+
+        '<p>'+esc(x.body)+'</p>'+
+        '</article>';
+
+      if(i<list.length-1){
+        const days=Math.floor((new Date(x.created_at)-new Date(list[i+1].created_at))/86400000);
+        if(days>=2){
+          html+='<div class="time-gap"><span>그리고 '+days+'일 뒤,</span></div>';
+        }
+      }
+    });
+    box.innerHTML=html;
+  }catch(e){
+    console.error(e);
+    box.innerHTML='<div class="card"><p>편지를 불러오지 못했어.<br>잠깐 뒤에 다시 열어봐.</p></div>';
+  }
+}
+
+async function saveLetter(){
+  const title=document.getElementById('letterTitle').value.trim();
+  const body=document.getElementById('letterBody').value.trim();
+  const err=document.getElementById('writeErr');
+  const pin=sessionStorage.getItem(PIN_SESSION_KEY);
+
+  if(!body){
+    err.textContent='한 줄만 남겨도 돼.';
+    return;
+  }
+  if(!pin){
+    show('lock');
+    return;
+  }
+
+  const sender = ACCESS_TYPE==='admin' ? '나' : '상대';
+
+  try{
+    await rpc('add_letter',{p_token:ROOM_TOKEN,p_pin:pin,p_sender:sender,p_title:title,p_body:body});
+    document.getElementById('letterTitle').value='';
+    document.getElementById('letterBody').value='';
+    err.textContent='';
+    await renderLetters();
+    show('inbox');
+  }catch(e){
+    console.error(e);
+    err.textContent='저장이 안 됐어. 다시 한번 해봐.';
+  }
+}
+
+let tapCount=0;
+let tapTimer=null;
+
+window.addEventListener('DOMContentLoaded',()=>{
+  ROOM_TOKEN=getTokenFromHash();
+
+  const title=document.getElementById('adminTap');
+  if(title){
+    title.addEventListener('click',()=>{
+      if(ACCESS_TYPE!=='admin')return;
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer=setTimeout(()=>tapCount=0,1600);
+      if(tapCount>=5){
+        tapCount=0;
+        show('adminLock');
+      }
+    });
+  }
+
+  if(!ROOM_TOKEN){
+    const p=document.querySelector('#open .opening-lead');
+    if(p)p.textContent='이 주소에는 아직 키링 열쇠가 없어.';
+  }
+});
 </script></body></html>
