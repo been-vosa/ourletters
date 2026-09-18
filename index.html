@@ -1293,6 +1293,7 @@ async function renderLetters(){
 }
 
 async function saveLetter(){
+  // sender is determined by the server from the NFC token
   const title=document.getElementById('letterTitle').value.trim();
   const body=document.getElementById('letterBody').value.trim();
   const err=document.getElementById('writeErr');
@@ -1307,14 +1308,11 @@ async function saveLetter(){
     return;
   }
 
-  const sender=ACCESS_TYPE==='admin'?'나':'상대';
-
   try{
     await rpc('add_letter_secure',{
       p_token:ROOM_TOKEN,
       p_pin:pin,
       p_device_key:getDeviceKey(),
-      p_sender:sender,
       p_title:title,
       p_body:body
     });
