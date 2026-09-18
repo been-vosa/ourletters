@@ -723,17 +723,9 @@ body:after{opacity:.08!important}
     </div>
   </div>
 </section>
-<section id="lock" class="screen"><div class="inner"><div class="eyebrow">ONLY US</div><h2>우리만 아는 번호</h2><p>우리 둘만 알면 돼.</p><input id="pinInput" class="pin" inputmode="numeric" maxlength="12" placeholder="••••••"><div id="pinErr" class="notice"></div><button class="btn" onclick="checkPin(localStorage.getItem(NAME_KEY)?'inbox':'who')">들어가기</button></div></section>
-<section id="who" class="screen"><div class="inner">
-<div class="eyebrow">JUST ONCE</div>
-<h2>누구야?</h2>
-<p>둘 중 하나만 고르면 돼.</p>
-<div class="nickname-picks">
-  <button class="nickname-choice" onclick="chooseName('나')"><span>01</span><b>나</b></button>
-  <button class="nickname-choice" onclick="chooseName('상대')"><span>02</span><b>상대</b></button>
-</div>
-</div></section>
-<section id="inbox" class="screen"><div class="inner"><div class="top"><div><div class="eyebrow">OUR LETTERS</div><h2 style="margin:6px 0 0">우리 편지함</h2></div><div class="mini" onclick="show('lock')">닫기</div></div><div class="archive-intro">
+<section id="lock" class="screen"><div class="inner"><div class="eyebrow">ONLY US</div><h2>우리만 아는 번호</h2><p>우리 둘만 알면 돼.</p><input id="pinInput" class="pin" inputmode="numeric" maxlength="12" placeholder="••••••"><div id="pinErr" class="notice"></div><button class="btn" onclick="checkPin('inbox')">들어가기</button></div></section>
+
+<section id="inbox" class="screen"><div class="inner"><div class="top"><div><div class="eyebrow">OUR LETTERS · ONLINE</div><h2 style="margin:6px 0 0">우리 편지함</h2></div><div class="mini" onclick="show('lock')">닫기</div></div><div class="archive-intro">
           <div id="archiveMood" class="archive-mood"></div>
           <div id="archiveCount" class="archive-count"></div>
         </div>
@@ -741,108 +733,48 @@ body:after{opacity:.08!important}
         <div id="letterList" class="letters"></div></div><button class="fab" onclick="show('write')">＋</button></section>
 <section id="write" class="screen"><div class="inner"><div class="eyebrow">FOR YOU</div><h2>오늘 남기고 싶은 말</h2><input id="letterTitle" placeholder="제목 (선택)"><textarea id="letterBody" placeholder="짧아도 되고, 길어도 돼."></textarea><div id="writeErr" class="notice"></div><button class="btn" onclick="saveLetter()">남겨두기</button><button class="btn secondary" onclick="show('inbox')">다음에 쓸게</button></div></section>
 <script>
-const ROOM_KEY='nfc_letter_demo_letters_v3';
-const PIN_KEY='nfc_letter_demo_pin_v2';
-const NAME_KEY='nfc_letter_demo_name_v2';
-const NAME_ME_KEY='nfc_letter_demo_me_name_v1';
-const NAME_PARTNER_KEY='nfc_letter_demo_partner_name_v1';
-function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');scrollTo(0,0)}
-function getDisplayName(role){
-  if(role==='나') return localStorage.getItem(NAME_ME_KEY)||'나';
-  if(role==='상대') return localStorage.getItem(NAME_PARTNER_KEY)||'상대';
-  return role||'';
-}
-function chooseName(name){
- localStorage.setItem(NAME_KEY,name);renderLetters();show('inbox');
-}
-function loadLetters(){try{return JSON.parse(localStorage.getItem(ROOM_KEY)||'[]')}catch(e){return[]}}
-function saveLetters(a){localStorage.setItem(ROOM_KEY,JSON.stringify(a))}
+const SUPABASE_REST="https://bglhywysdhulofizpiuz.supabase.co/rest/v1";
+const SUPABASE_KEY="sb_publishable_vy75HU6LYmLOdBkuZh9l6w_J0PA5xlk";
+const ROOM_TOKEN="ad7162607e27e640c67e39d90e564bdaecb9efb3ecc38477";
+const FIXED_SENDER="\uc0c1\ub300";
+const PIN_SESSION_KEY='ourletters_pin_session_v1';
+const NAME_ME_KEY='ourletters_me_name_v1';
+const NAME_PARTNER_KEY='ourletters_partner_name_v1';
+
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));const el=document.getElementById(id);if(el)el.classList.add('on');scrollTo(0,0)}
 function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
-
-function relativeAgo(ts){
-  const diff=Math.max(0,Date.now()-(ts||0));
-  const day=86400000;
-  const days=Math.floor(diff/day);
-  if(days<=0)return '오늘';
-  if(days===1)return '어제';
-  if(days<30)return `${days}일 전`;
-  const months=Math.floor(days/30);
-  if(months<12)return `${months}개월 전`;
-  const years=Math.floor(days/365);
-  if(years<2)return '1년 전';
-  return `${years}년 전`;
+function getDisplayName(role){if(role==='나')return localStorage.getItem(NAME_ME_KEY)||'나';if(role==='상대')return localStorage.getItem(NAME_PARTNER_KEY)||'상대';return role||''}
+function relativeAgo(ts){const d=Math.floor(Math.max(0,Date.now()-new Date(ts).getTime())/86400000);if(d<=0)return '오늘';if(d===1)return '어제';if(d<30)return d+'일 전';const m=Math.floor(d/30);if(m<12)return m+'개월 전';return Math.floor(d/365)+'년 전'}
+function headers(){return {apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}}
+async function rpc(name,body){const r=await fetch(SUPABASE_REST+'/rpc/'+name,{method:'POST',headers:headers(),body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());return await r.json()}
+async function checkPin(next){
+  const pin=document.getElementById('pinInput').value.trim(),err=document.getElementById('pinErr');
+  if(!pin){err.textContent='번호를 입력해줘.';return}
+  try{
+    const rows=await rpc('verify_room_access',{p_token:ROOM_TOKEN,p_pin:pin});
+    if(rows.length){sessionStorage.setItem(PIN_SESSION_KEY,pin);localStorage.setItem(NAME_ME_KEY,rows[0].person_a_name||'나');localStorage.setItem(NAME_PARTNER_KEY,rows[0].person_b_name||'상대');await renderLetters();show(next)}
+    else err.textContent='번호가 맞지 않아.';
+  }catch(e){console.error(e);err.textContent='잠깐 문제가 생겼어. 다시 해봐.'}
 }
-function renderLetters(){
- const list=loadLetters().slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
- const box=document.getElementById('letterList'); if(!box)return;
-
- const mood=document.getElementById('archiveMood');
- const count=document.getElementById('archiveCount');
- if(mood){
-   mood.textContent=list.length<=1?'첫 번째 말을 남긴 날부터':
-                    list.length<8?'조금씩, 우리의 말이 쌓이고 있어.':
-                    list.length<20?'말하지 못한 것들이 제법 쌓였다.':
-                    '우리도 꽤 많은 시간을 여기 남겼네.';
- }
- if(count) count.textContent=list.length?`지금까지 서로에게 남긴 편지 ${list.length}개`:'아직 첫 편지를 기다리는 중';
-
- const memory=document.getElementById('memorySpot');
- if(memory){
-   if(list.length>=8){
-     const old=list[list.length-1];
-     memory.innerHTML=`<div class="memory-label">그때 우리가 남긴 말</div>
-       <div class="memory-card">
-         <div class="memory-date">${relativeAgo(old.ts)}</div>
-         <b>${esc(old.title||'그날의 말')}</b>
-         <p>${esc((old.body||'').replace(/\n/g,' ').slice(0,70))}${(old.body||'').length>70?'…':''}</p>
-       </div>`;
-   }else memory.innerHTML='';
- }
-
- if(!list.length){
-   box.innerHTML=`<div class="card"><p>아직 남겨진 편지가 없어.<br>첫 번째 말을 남겨볼까.</p></div>`;
-   return;
- }
-
- let html='';
- list.forEach((x,i)=>{
-   html+=`<article class="letter ${x.from==='나'?'mine':'theirs'}">
-     <div class="letter-head">
-       <div class="sender-badge">${esc(getDisplayName(x.from))}</div>
-       <time>${new Date(x.ts).toLocaleString('ko-KR')}</time>
-     </div>
-     <h3>${esc(x.title||'오늘 남긴 말')}</h3>
-     <p>${esc(x.body)}</p>
-   </article>`;
-   if(i<list.length-1){
-     const newer=x.ts||0, older=list[i+1].ts||0;
-     const days=Math.floor((newer-older)/86400000);
-     if(days>=2){
-       html+=`<div class="time-gap"><span>그리고 ${days}일 뒤,</span></div>`;
-     }
-   }
- });
- box.innerHTML=html;
+async function loadLetters(){const pin=sessionStorage.getItem(PIN_SESSION_KEY);if(!pin)return [];return await rpc('get_letters',{p_token:ROOM_TOKEN,p_pin:pin})}
+async function renderLetters(){
+  const box=document.getElementById('letterList');if(!box)return;
+  try{
+    const list=(await loadLetters()).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    const mood=document.getElementById('archiveMood'),count=document.getElementById('archiveCount'),memory=document.getElementById('memorySpot');
+    if(mood)mood.textContent=list.length<=1?'첫 번째 말을 남긴 날부터':list.length<8?'조금씩, 우리의 말이 쌓이고 있어.':list.length<20?'말하지 못한 것들이 제법 쌓였다.':'우리도 꽤 많은 시간을 여기 남겼네.';
+    if(count)count.textContent=list.length?'지금까지 서로에게 남긴 편지 '+list.length+'개':'아직 첫 편지를 기다리는 중';
+    if(memory){if(list.length>=8){const old=list[list.length-1];memory.innerHTML='<div class="memory-label">그때 우리가 남긴 말</div><div class="memory-card"><div class="memory-date">'+relativeAgo(old.created_at)+'</div><b>'+esc(old.title||'그날의 말')+'</b><p>'+esc((old.body||'').replace(/\n/g,' ').slice(0,70))+((old.body||'').length>70?'…':'')+'</p></div>'}else memory.innerHTML=''}
+    if(!list.length){box.innerHTML='<div class="card"><p>아직 남겨진 편지가 없어.<br>첫 번째 말을 남겨볼까.</p></div>';return}
+    let html='';
+    list.forEach((x,i)=>{html+='<article class="letter '+(x.sender==='나'?'mine':'theirs')+'"><div class="letter-head"><div class="sender-badge">'+esc(getDisplayName(x.sender))+'</div><time>'+new Date(x.created_at).toLocaleString('ko-KR')+'</time></div><h3>'+esc(x.title||'오늘 남긴 말')+'</h3><p>'+esc(x.body)+'</p></article>';if(i<list.length-1){const days=Math.floor((new Date(x.created_at)-new Date(list[i+1].created_at))/86400000);if(days>=2)html+='<div class="time-gap"><span>그리고 '+days+'일 뒤,</span></div>'}});
+    box.innerHTML=html;
+  }catch(e){console.error(e);box.innerHTML='<div class="card"><p>편지를 불러오지 못했어.<br>잠깐 뒤에 다시 열어봐.</p></div>'}
 }
-function saveLetter(){
- const title=document.getElementById('letterTitle').value.trim(),body=document.getElementById('letterBody').value.trim();
- if(!body){document.getElementById('writeErr').textContent='한 줄만 남겨도 돼.';return}
- const from=localStorage.getItem(NAME_KEY)||'나',arr=loadLetters();arr.push({title,body,from,ts:Date.now()});saveLetters(arr);
- document.getElementById('letterTitle').value='';document.getElementById('letterBody').value='';renderLetters();show('inbox');
+async function saveLetter(){
+ const title=document.getElementById('letterTitle').value.trim(),body=document.getElementById('letterBody').value.trim(),err=document.getElementById('writeErr'),pin=sessionStorage.getItem(PIN_SESSION_KEY);
+ if(!body){err.textContent='한 줄만 남겨도 돼.';return} if(!pin){show('lock');return}
+ try{await rpc('add_letter',{p_token:ROOM_TOKEN,p_pin:pin,p_sender:FIXED_SENDER,p_title:title,p_body:body});document.getElementById('letterTitle').value='';document.getElementById('letterBody').value='';err.textContent='';await renderLetters();show('inbox')}catch(e){console.error(e);err.textContent='저장이 안 됐어. 다시 한번 해봐.'}
 }
 
-
-function seedSampleLetters(){
- const demoKey='nfc_letter_demo_seed_v3';
- if(!localStorage.getItem(demoKey)){
-   saveLetters([{"title": "오늘 문득", "body": "오늘은 그냥 네 생각이 나서 남김.\n별일은 없었는데 이런 날도 기록해두면 나중에 웃길 것 같아서.", "from": "나", "ts": 1789744906863}, {"title": "퇴근길", "body": "집 가는 길인데 갑자기 예전에 같이 걷던 길 생각났어.\n그땐 별거 아니었는데 지금 생각하면 꽤 좋았네.", "from": "상대", "ts": 1789399306863}, {"title": "고마웠던 거", "body": "내가 별말 안 했는데 먼저 챙겨준 거 고마웠어.\n그때 바로 말은 못 했음.", "from": "나", "ts": 1788621706863}, {"title": "아무 날도 아닌데", "body": "특별한 날 아니어도 같이 밥 먹고 소파에 누워있는 게 제일 편하더라.", "from": "상대", "ts": 1787239306863}, {"title": "다음에 꼭", "body": "날 좀 선선해지면 둘이 아무 데나 하루 놀러 가자.\n계획 너무 세우지 말고 그냥.", "from": "나", "ts": 1785338506863}, {"title": "조금 미안", "body": "요즘 피곤하다고 말투가 짧았던 것 같아.\n알면서도 또 그랬네. 미안.", "from": "상대", "ts": 1782573706863}, {"title": "웃긴 기록", "body": "오늘 네가 한 말 아직도 생각나서 웃김.\n본인은 왜 웃긴지 모르는 게 제일 웃겨.", "from": "나", "ts": 1779636106863}, {"title": "그날", "body": "그날은 좀 힘들었는데 옆에 있어줘서 괜찮았어.\n굳이 해결해주지 않아도 되는 날도 있더라.", "from": "상대", "ts": 1776266506863}, {"title": "평범한 주말", "body": "점심 먹고 낮잠 자고 저녁 먹은 게 끝인데,\n이상하게 이런 날이 오래 기억나.", "from": "나", "ts": 1772378506863}, {"title": "고맙다는 말", "body": "매번 당연한 것처럼 지나가지만 사실 고마운 게 많아.\n다 쓰려면 길어지니 오늘은 여기까지만.", "from": "상대", "ts": 1768317706863}, {"title": "우리다운 하루", "body": "계획한 건 하나도 없는데 결국 잘 놀았음.\n역시 우리답다.", "from": "나", "ts": 1763738506863}, {"title": "갑자기 생각나서", "body": "처음 만났을 때보다 지금이 더 편하고 더 웃긴 것 같아.\n좋은 쪽으로.", "from": "상대", "ts": 1758727306863}, {"title": "비 오는 날", "body": "비 오는 날 같이 우산 쓰고 걷던 거 생각났어.\n한쪽 어깨 젖는 건 여전하겠지.", "from": "나", "ts": 1753370506863}, {"title": "그때는 몰랐는데", "body": "그때 네가 해준 말이 나중에 생각보다 오래 남더라.\n그래서 나도 여기 남겨둠.", "from": "상대", "ts": 1747668106863}, {"title": "괜히 쓰는 편지", "body": "딱히 할 말은 없는데 그냥 남기고 싶었어.\n이런 것도 나중엔 기록이겠지.", "from": "나", "ts": 1742397706863}, {"title": "그날 저녁", "body": "같이 먹었던 저녁은 기억 안 나는데 네가 했던 말은 기억나.\n그게 좀 신기함.", "from": "상대", "ts": 1737645706863}, {"title": "한 번쯤", "body": "가끔은 우리가 얼마나 오래 같이 있을지 궁금해.\n근데 일단 다음 주말부터 잘 보내자.", "from": "나", "ts": 1732634506863}, {"title": "오늘의 결론", "body": "싸워도 결국 다시 말 걸고 밥 같이 먹는 거 보면 우리 꽤 끈질기다.", "from": "상대", "ts": 1728746506863}, {"title": "처음 남기는 말", "body": "이런 걸 왜 쓰나 싶었는데 막상 적으니까 괜찮네.\n나중에 읽으면 조금 민망할 것 같기도 하고.", "from": "나", "ts": 1725463306863}, {"title": "여기서 시작", "body": "오늘부터 가끔씩 남겨보자.\n엄청 대단한 말 아니어도 괜찮고,\n그때의 우리가 무슨 생각했는지만 남아도 좋겠다.", "from": "상대", "ts": 1722266506863}]);
-   localStorage.setItem(demoKey,'1');
- }
-}
-function firstSetup(defaultName){if(!localStorage.getItem(PIN_KEY))localStorage.setItem(PIN_KEY,'070707');seedSampleLetters();if(!localStorage.getItem(NAME_KEY))localStorage.setItem(NAME_KEY,defaultName)}
-function checkPin(next){
- const val=document.getElementById('pinInput').value.trim(),pin=localStorage.getItem(PIN_KEY)||'070707';
- if(val===pin){show(next);renderLetters()}else document.getElementById('pinErr').textContent='닫기번호가 맞지 않아요.'
-}
-window.addEventListener('DOMContentLoaded',renderLetters);
-firstSetup('상대');</script></body></html>
+</script></body></html>
