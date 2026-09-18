@@ -1,0 +1,848 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>우리에게 남겨진 말들</title><style>
+:root{--bg:#f4efe7;--paper:#fffdf9;--ink:#27221d;--mut:#766f67;--line:#e6d9cc;--accent:#5c736b;--warm:#d79370}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 100% 0,#eed9cf 0,transparent 28%),radial-gradient(circle at 0 70%,#dde8e2 0,transparent 24%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+button,input,textarea{font:inherit}.screen{display:none;min-height:100svh;padding:22px}.screen.on{display:flex}.inner{width:min(100%,680px);margin:auto}.eyebrow{font-size:10px;letter-spacing:.18em;font-weight:800;opacity:.5}
+h1{font-size:clamp(42px,12vw,72px);line-height:1.02;letter-spacing:-.06em;margin:14px 0 16px}h2{font-size:30px;letter-spacing:-.04em;margin:0 0 14px}p{color:var(--mut);line-height:1.75;font-size:14px}
+.btn{width:100%;border:0;border-radius:16px;padding:15px 16px;margin-top:12px;background:var(--ink);color:#fff;font-weight:800}.btn.secondary{background:#ece3d8;color:var(--ink)}
+.card{background:rgba(255,253,249,.92);border:1px solid var(--line);border-radius:24px;padding:18px;margin:12px 0;box-shadow:0 14px 40px #6b513b12}.pin{font-size:22px;text-align:center;letter-spacing:.25em}
+input,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;outline:none}textarea{min-height:180px;resize:vertical;line-height:1.7}
+.letters{display:grid;gap:12px}.letter{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px}.letter time{font-size:10px;color:#9a9189}.letter h3{font-size:18px;margin:8px 0}.letter p{white-space:pre-wrap;color:#4d4741;margin:8px 0}.from{font-size:11px;font-weight:800;color:var(--warm)}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}.mini{font-size:11px;color:var(--mut);cursor:pointer}.fab{position:fixed;right:18px;bottom:18px;width:58px;height:58px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:28px;box-shadow:0 10px 30px #0003}
+.notice{font-size:11px;background:#f2e7dc;border-radius:13px;padding:11px;margin-top:10px;color:#6a625a}.admin-dot{width:8px;height:8px;border-radius:50%;background:#68877b;display:inline-block;margin-right:5px}.admin-panel{border:1px dashed #bda995;background:#fff8ee;border-radius:18px;padding:14px;margin-top:12px}
+@media(max-width:430px){.screen{padding:18px}.card,.letter{border-radius:20px}}
+
+/* visual polish v2 */
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+  background-image:
+    linear-gradient(rgba(70,56,45,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(70,56,45,.035) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.inner{position:relative;z-index:1}
+.screen.on{animation:screenIn .36s ease}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.eyebrow{display:inline-flex;align-items:center;gap:7px}
+.eyebrow:before{content:"";width:18px;height:1px;background:currentColor;opacity:.35}
+h1,h2{font-weight:900;text-wrap:balance}
+.open-deco{display:flex;gap:8px;margin:20px 0 0}
+.open-deco i{display:block;width:34px;height:5px;border-radius:99px;background:#d8c7b9}
+.open-deco i:nth-child(2){width:16px;background:#8ea49b}
+.open-deco i:nth-child(3){width:9px;background:#d79370}
+.quote-card{
+  margin-top:22px;padding:18px 18px 16px;border-radius:22px;
+  background:linear-gradient(180deg,#fffdf9,#fbf6ef);
+  border:1px solid #e7dacd;
+  box-shadow:0 18px 40px #725d4812;
+}
+.quote-card .qmark{font-size:38px;line-height:.7;color:#caa88e}
+.quote-card p{margin:8px 0 0;color:#49423d;font-size:14px}
+.letter{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#fffefb 0%,#fffaf4 100%);
+}
+.letter:after{
+  content:"";position:absolute;right:-28px;top:-28px;width:90px;height:90px;border-radius:50%;
+  border:1px solid rgba(90,115,107,.14);
+}
+.letter time{letter-spacing:.04em;text-transform:uppercase}
+.letter h3{font-size:20px;letter-spacing:-.03em}
+.letter p{font-size:14px;line-height:1.85}
+.from{margin-top:14px;padding-top:12px;border-top:1px dashed #e3d6c9}
+.top{padding-bottom:8px;border-bottom:1px solid rgba(80,60,45,.08)}
+.fab{display:grid;place-items:center;transition:.18s transform,.18s box-shadow}
+.fab:active{transform:scale(.95)}
+.btn{transition:.18s transform,.18s opacity}.btn:active{transform:translateY(1px);opacity:.9}
+.pin{background:#fffdf9;font-weight:800}
+.lock-hint{
+  display:flex;align-items:flex-start;gap:10px;margin-top:16px;padding:12px 13px;
+  background:#fff8ef;border:1px solid #eadbc9;border-radius:14px;color:#70675f;font-size:11px;line-height:1.6
+}
+.lock-hint b{color:#3c352f}
+.inbox-intro{margin:0 0 16px;color:#6e665f;font-size:12px}
+@media(max-width:430px){
+  .letter p{font-size:13px}
+  .fab{right:16px;bottom:16px}
+}
+
+
+/* v3 long-list/fab fix */
+#inbox .inner{
+  padding-bottom:120px;
+}
+.fab{
+  z-index:50;
+  bottom:max(20px,env(safe-area-inset-bottom));
+  right:max(18px,env(safe-area-inset-right));
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+  border:4px solid rgba(244,239,231,.9);
+}
+.fab:before{
+  content:"오늘의 마음 남기기";
+  position:absolute;
+  right:66px;
+  white-space:nowrap;
+  padding:9px 12px;
+  border-radius:12px;
+  background:rgba(39,34,29,.92);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  opacity:.96;
+  pointer-events:none;
+}
+@media(max-width:430px){
+  #inbox .inner{padding-bottom:132px}
+  .fab{width:62px;height:62px;bottom:max(18px,env(safe-area-inset-bottom));right:16px}
+  .fab:before{right:70px}
+}
+
+
+/* v4 conversational letter layout */
+.letters{display:flex;flex-direction:column;gap:15px;align-items:stretch}
+.letter{width:min(88%,560px);margin:0;transition:transform .18s ease}
+.letter.mine{align-self:flex-end;border-left:1px solid var(--line);border-right:4px solid #78958a;border-radius:22px 8px 22px 22px}
+.letter.theirs{align-self:flex-start;border-left:4px solid #d99a79;border-radius:8px 22px 22px 22px}
+.letter.mine .letter-head{flex-direction:row-reverse}
+.letter.mine time{text-align:left}
+.letter.theirs time{text-align:right}
+.letter.mine h3,.letter.mine p{text-align:left}
+.letter.theirs h3,.letter.theirs p{text-align:left}
+.sender-badge{min-width:44px;justify-content:center}
+@media(max-width:430px){
+ .letter{width:91%}
+ .letters{gap:13px}
+}
+
+
+/* ===== v5 visual redesign ===== */
+:root{
+  --bg:#eee8df;
+  --paper:#fffaf3;
+  --paper2:#fbf4ea;
+  --ink:#26211c;
+  --mut:#736b63;
+  --line:#decfc1;
+  --accent:#6f8a80;
+  --accent2:#bd7a5f;
+  --shadow:0 18px 45px rgba(73,55,40,.12);
+}
+html{background:#e9e2d8}
+body{
+  min-height:100svh;
+  background:
+    radial-gradient(circle at 8% 10%,rgba(255,255,255,.72),transparent 24%),
+    radial-gradient(circle at 92% 2%,rgba(204,166,147,.22),transparent 27%),
+    radial-gradient(circle at 12% 92%,rgba(111,138,128,.12),transparent 24%),
+    linear-gradient(180deg,#f3eee7 0%,#ece4da 100%);
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;mix-blend-mode:multiply;
+  background-image:
+    radial-gradient(circle at 20% 20%,#8b7662 0 0.7px,transparent .8px),
+    radial-gradient(circle at 80% 30%,#8b7662 0 0.6px,transparent .7px);
+  background-size:22px 24px,28px 26px;
+}
+.screen{
+  position:relative;
+  overflow:hidden;
+}
+.screen:before{
+  content:"";position:absolute;inset:auto -60px -80px auto;
+  width:180px;height:180px;border-radius:50%;
+  border:1px solid rgba(100,80,60,.07);
+}
+.inner{padding:8px 0 18px}
+.eyebrow{
+  color:#80766e;
+  font-size:9px;
+  letter-spacing:.22em;
+  font-weight:900;
+}
+.eyebrow:before{width:26px;background:#a9998c}
+h1{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-weight:700;
+  font-size:clamp(50px,14vw,82px);
+  line-height:.95;
+  letter-spacing:-.055em;
+}
+h2{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-weight:700;
+  font-size:clamp(30px,8vw,44px);
+  letter-spacing:-.045em;
+  line-height:1.08;
+}
+p{font-size:14px;line-height:1.8}
+
+/* opening */
+#open .inner{
+  padding-top:8vh;
+}
+#open h1{max-width:560px;margin-top:22px}
+#open p{max-width:470px;font-size:15px}
+.open-deco{margin-top:28px;gap:7px}
+.open-deco i{height:4px}
+.quote-card{
+  position:relative;
+  padding:22px 20px 20px;
+  margin-top:28px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,249,241,.9));
+  border:1px solid rgba(207,190,174,.85);
+  box-shadow:var(--shadow);
+}
+.quote-card:before{
+  content:"";position:absolute;left:18px;top:-7px;width:42px;height:13px;
+  background:rgba(214,197,175,.58);
+  transform:rotate(-3deg);
+}
+.quote-card .qmark{font-family:Georgia,serif;color:#c7987c;font-size:48px}
+.quote-card p{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:16px;line-height:1.65}
+#open .btn{
+  margin-top:20px;
+}
+
+/* buttons */
+.btn{
+  min-height:52px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#302a25,#211d19);
+  box-shadow:0 10px 24px rgba(49,38,29,.14);
+  letter-spacing:-.01em;
+}
+.btn.secondary{
+  background:#e9ded1;
+  color:#342d27;
+  box-shadow:none;
+  border:1px solid #ddccbc;
+}
+.btn:hover{filter:brightness(1.02)}
+.btn:active{transform:translateY(1px) scale(.995)}
+
+/* lock */
+#lock .inner{
+  max-width:520px;
+}
+#lock:after{
+  content:"ONLY US";position:absolute;right:-16px;top:56px;
+  font-family:Georgia,serif;font-size:58px;letter-spacing:.04em;
+  color:rgba(67,54,43,.035);transform:rotate(90deg);
+}
+.pin{
+  margin-top:8px;
+  padding:17px;
+  border-radius:18px;
+  background:rgba(255,252,247,.94);
+  box-shadow:inset 0 0 0 1px rgba(140,120,100,.05);
+}
+.lock-hint{
+  border-radius:16px;
+  background:rgba(255,250,243,.72);
+}
+
+/* nickname pick */
+.nickname-picks{gap:14px}
+.nickname-choice{
+  min-height:122px;
+  padding:18px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(160deg,#fffdf9,#f8efe5);
+  box-shadow:var(--shadow);
+}
+.nickname-choice:after{
+  content:"";position:absolute;width:70px;height:70px;border-radius:50%;
+  right:-20px;bottom:-28px;border:1px solid rgba(110,90,70,.12);
+}
+.nickname-choice span{font-weight:900}
+.nickname-choice b{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:27px}
+
+/* inbox */
+#inbox{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.22),transparent 16%),
+    transparent;
+}
+#inbox .inner{max-width:760px}
+.top{
+  position:sticky;
+  top:0;
+  z-index:20;
+  margin:-2px -4px 18px;
+  padding:12px 4px 15px;
+  background:linear-gradient(180deg,rgba(239,233,224,.96),rgba(239,233,224,.88),rgba(239,233,224,0));
+  backdrop-filter:blur(8px);
+  border-bottom:0;
+}
+.top h2{font-size:36px}
+.inbox-intro{
+  padding:0 2px 8px;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-style:italic;
+  font-size:13px;
+  color:#7f756d;
+}
+.letters{gap:18px}
+.letter{
+  width:min(86%,560px);
+  padding:20px 20px 18px;
+  border:1px solid rgba(218,202,187,.96);
+  box-shadow:0 10px 26px rgba(68,51,38,.075);
+  backdrop-filter:blur(2px);
+}
+.letter.mine{
+  background:
+    linear-gradient(155deg,#f7fbf8 0%,#eef5f1 100%);
+  border-right:4px solid #78958a;
+  border-left:1px solid #d6e2dc;
+}
+.letter.theirs{
+  background:
+    linear-gradient(155deg,#fffaf4 0%,#f9eee5 100%);
+  border-left:4px solid #d69673;
+}
+.letter.mine:before,
+.letter.theirs:before{
+  content:"";position:absolute;top:14px;width:36px;height:8px;
+  background:rgba(205,190,171,.35);
+}
+.letter.mine:before{right:18px;transform:rotate(2deg)}
+.letter.theirs:before{left:18px;transform:rotate(-2deg)}
+.letter-head{margin-top:7px}
+.sender-badge{
+  padding:7px 11px;
+  font-size:10px;
+  letter-spacing:.02em;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
+}
+.letter.mine .sender-badge{background:#dceae3;color:#31584c}
+.letter.theirs .sender-badge{background:#f1ddcf;color:#8d5038}
+.letter time{
+  font-size:9px;
+  color:#9b9188;
+}
+.letter h3{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-size:22px;
+  line-height:1.2;
+  margin:14px 0 9px;
+}
+.letter p{
+  font-size:14px;
+  line-height:1.9;
+  color:#4c453f;
+}
+.fab{
+  width:auto;
+  min-width:62px;
+  height:62px;
+  padding:0 18px;
+  border-radius:22px;
+  font-size:24px;
+  background:linear-gradient(180deg,#2f2924,#1f1b18);
+  border:3px solid rgba(239,233,224,.88);
+}
+.fab:before{
+  right:68px;
+  background:#2b2521;
+  box-shadow:0 8px 20px rgba(0,0,0,.14);
+}
+
+/* writing */
+#write .inner{max-width:620px}
+#write input,#write textarea{
+  background:rgba(255,253,249,.92);
+  border-color:#ddcfc2;
+  box-shadow:0 10px 28px rgba(69,51,37,.05);
+}
+#write textarea{
+  min-height:280px;
+  padding:18px;
+  font-size:15px;
+  line-height:1.9;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,253,249,.94) 0,
+      rgba(255,253,249,.94) 31px,
+      rgba(122,104,88,.08) 32px
+    );
+}
+
+/* admin */
+#admin .inner,#adminLock .inner{max-width:640px}
+.admin-panel{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid #d9c9b9;
+  background:linear-gradient(180deg,#fff9f1,#f8eee3);
+  box-shadow:0 10px 25px rgba(80,60,45,.06);
+}
+.admin-panel b{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-size:18px;
+}
+.admin-panel p{font-size:12px}
+.admin-dot{
+  box-shadow:0 0 0 5px rgba(104,135,123,.12);
+}
+
+@media(max-width:430px){
+  #open .inner{padding-top:5vh}
+  h1{font-size:52px}
+  .letter{width:91%;padding:18px}
+  .letter h3{font-size:20px}
+  .fab:before{display:none}
+  .fab{min-width:60px;width:60px;padding:0}
+}
+
+
+/* v6 tone & typography */
+body{
+  font-family:ui-rounded,"SF Pro Rounded","Pretendard","Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+h1,h2,.quote-card p,.letter h3,.admin-panel b,.nickname-choice b{
+  font-family:ui-rounded,"SF Pro Rounded","Pretendard","Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+h1{
+  font-weight:800!important;
+  letter-spacing:-.065em!important;
+}
+h2{
+  font-weight:800!important;
+  letter-spacing:-.05em!important;
+}
+.quote-card p{
+  font-style:normal!important;
+  font-weight:700;
+  letter-spacing:-.025em;
+}
+.letter h3{
+  font-weight:800;
+  letter-spacing:-.035em;
+}
+.letter p{
+  font-weight:500;
+  letter-spacing:-.018em;
+}
+.eyebrow{
+  letter-spacing:.14em;
+  font-weight:800;
+}
+.admin-panel p:empty{display:none}
+
+
+/* v7 shared opening + small smile */
+.opening-smile{
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px dashed rgba(135,111,91,.22);
+  color:#8a7e74;
+  font-size:12px;
+  line-height:1.65;
+  letter-spacing:-.02em;
+}
+.opening-smile b{
+  color:#5e554e;
+  font-weight:800;
+}
+
+
+/* v8 archive storytelling */
+.archive-intro{
+  margin:2px 0 20px;
+  padding:16px 17px;
+  border-left:3px solid rgba(111,138,128,.55);
+  background:rgba(255,251,245,.46);
+  border-radius:0 16px 16px 0;
+}
+.archive-mood{
+  font-size:14px;
+  font-weight:750;
+  color:#514941;
+  letter-spacing:-.025em;
+}
+.archive-count{
+  margin-top:6px;
+  font-size:10px;
+  color:#958a81;
+  letter-spacing:.02em;
+}
+.time-gap{
+  align-self:center;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:1px 0;
+  color:#a19489;
+  font-size:10px;
+  white-space:nowrap;
+}
+.time-gap:before,.time-gap:after{
+  content:"";height:1px;flex:1;
+  background:linear-gradient(90deg,transparent,rgba(145,125,108,.18));
+}
+.time-gap:after{background:linear-gradient(90deg,rgba(145,125,108,.18),transparent)}
+.time-gap span{
+  padding:4px 7px;
+  font-style:italic;
+}
+.memory-spot{margin:0 0 20px}
+.memory-label{
+  font-size:9px;
+  letter-spacing:.12em;
+  font-weight:900;
+  color:#8d8177;
+  margin:0 0 8px 4px;
+}
+.memory-card{
+  position:relative;
+  padding:16px 18px;
+  border-radius:18px;
+  background:rgba(246,237,226,.75);
+  border:1px dashed rgba(177,151,129,.38);
+}
+.memory-card:before{
+  content:"↺";
+  position:absolute;right:14px;top:11px;
+  font-size:18px;color:rgba(116,98,82,.22);
+}
+.memory-date{font-size:9px;color:#9c9086;margin-bottom:6px}
+.memory-card b{font-size:14px;color:#554b43}
+.memory-card p{
+  margin:5px 24px 0 0;
+  font-size:11px;
+  line-height:1.65;
+  color:#82766d;
+}
+.opening-smile{
+  font-style:normal!important;
+  font-size:13px!important;
+}
+.opening-smile b{
+  display:inline-block;
+  margin-top:2px;
+  color:#4e4640;
+}
+
+
+/* v9 opening button fix */
+#open .inner{
+  display:block!important;
+}
+#open .btn{
+  width:auto!important;
+  min-width:150px!important;
+  max-width:220px!important;
+  min-height:50px!important;
+  height:auto!important;
+  padding:14px 24px!important;
+  margin:22px 0 0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:static!important;
+  border-radius:16px!important;
+  font-size:15px!important;
+  line-height:1!important;
+}
+#open .quote-card{
+  max-width:520px;
+}
+@media(max-width:430px){
+  #open .btn{
+    width:100%!important;
+    max-width:none!important;
+    display:flex!important;
+  }
+}
+
+
+/* v10 opening structural fix + 20 letter demo */
+#open{
+  display:none;
+  min-height:100svh;
+  padding:22px!important;
+}
+#open.on{
+  display:flex!important;
+  align-items:flex-start!important;
+}
+#open .opening-inner{
+  width:min(100%,680px)!important;
+  margin:0 auto!important;
+  padding:7vh 0 42px!important;
+  display:block!important;
+  position:relative!important;
+}
+#open .opening-lead{
+  max-width:520px;
+}
+#open .quote-card{
+  width:100%!important;
+  max-width:520px!important;
+  margin:28px 0 0!important;
+}
+#open .opening-actions{
+  display:block!important;
+  width:100%!important;
+  max-width:520px!important;
+  margin:20px 0 0!important;
+  padding:0!important;
+  position:static!important;
+}
+#open .opening-cta{
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  display:flex!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  height:54px!important;
+  min-height:54px!important;
+  margin:0!important;
+  padding:0 22px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:17px!important;
+  font-size:15px!important;
+  line-height:1!important;
+}
+@media(max-width:430px){
+  #open{padding:18px!important}
+  #open .opening-inner{padding-top:4vh!important}
+  #open .quote-card,#open .opening-actions{max-width:none!important}
+}
+
+
+/* v11 opening copy restore */
+#open .quote-card{
+  display:block!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:22px 20px 20px!important;
+}
+#open .quote-card .qmark{
+  display:block!important;
+}
+#open .quote-card p,
+#open .opening-smile{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+#open .opening-actions{
+  margin-top:18px!important;
+}
+#open .opening-cta{
+  width:100%!important;
+  max-width:520px!important;
+}
+
+
+/* v12 neutral ivory + sage palette */
+:root{
+  --bg:#f1f0eb!important;
+  --paper:#fbfaf7!important;
+  --paper2:#f5f4ef!important;
+  --ink:#292b28!important;
+  --mut:#73766f!important;
+  --line:#d8d9d2!important;
+  --accent:#71877d!important;
+  --accent2:#b7836e!important;
+  --shadow:0 18px 45px rgba(54,61,56,.09)!important;
+}
+html{background:#ecece7!important}
+body{
+  background:
+    radial-gradient(circle at 8% 10%,rgba(255,255,255,.82),transparent 25%),
+    radial-gradient(circle at 92% 3%,rgba(138,160,149,.13),transparent 28%),
+    radial-gradient(circle at 10% 92%,rgba(111,135,124,.10),transparent 25%),
+    linear-gradient(180deg,#f4f3ef 0%,#ecece7 100%)!important;
+}
+body:after{opacity:.08!important}
+.quote-card{
+  background:linear-gradient(145deg,rgba(252,252,249,.96),rgba(245,246,241,.94))!important;
+  border-color:#d9dad3!important;
+}
+.quote-card:before{background:rgba(190,196,185,.55)!important}
+.quote-card .qmark{color:#8da096!important}
+.open-deco i{background:#c9ccc4!important}
+.open-deco i:nth-child(2){background:#81978c!important}
+.open-deco i:nth-child(3){background:#b58a78!important}
+#inbox .top{
+  background:linear-gradient(180deg,rgba(241,240,235,.97),rgba(241,240,235,.90),rgba(241,240,235,0))!important;
+}
+.archive-intro{background:rgba(249,249,245,.62)!important}
+.letter.mine{
+  background:linear-gradient(155deg,#f7faf8 0%,#edf3ef 100%)!important;
+}
+.letter.theirs{
+  background:linear-gradient(155deg,#fbfaf7 0%,#f4efeb 100%)!important;
+  border-left-color:#b78b78!important;
+}
+.letter.theirs .sender-badge{background:#eee1da!important;color:#80594a!important}
+.memory-card{background:rgba(237,239,233,.78)!important;border-color:rgba(129,145,135,.34)!important}
+.admin-group,.admin-panel{
+  background:linear-gradient(180deg,rgba(250,250,247,.94),rgba(243,244,239,.94))!important;
+  border-color:#d8dad2!important;
+}
+.key-status-card{background:#edf3ef!important;border-color:#d4e0d9!important}
+.setting-btn,.fake-url,.dropzone{
+  background:#fafaf7!important;
+  border-color:#d3d5cd!important;
+}
+.btn.secondary{background:#e6e7e1!important;border-color:#d5d7cf!important}
+.fab{border-color:rgba(241,240,235,.92)!important}
+
+</style></head><body>
+<section id="open" class="screen on">
+  <div class="inner opening-inner">
+    <div class="eyebrow">JUST FOR US</div>
+    <h1>내가 남긴 말도,<br>네가 남긴 말도.</h1>
+    <p class="opening-lead">하고 싶은 말이 생기면, 그냥 여기 남겨두자.</p>
+
+    <div class="open-deco"><i></i><i></i><i></i></div>
+
+    <div class="quote-card">
+      <div class="qmark">“</div>
+      <p>오늘의 마음이, 나중엔 우리가 지나온 시간이 되겠지.</p>
+      <div class="opening-smile">
+        시간이 많이 지나도<br>
+        이 안의 말들을 읽으면<br>
+        <b>지금의 우리가 다시 생각났으면 좋겠다.</b>
+      </div>
+    </div>
+
+    <div class="opening-actions">
+      <button class="btn opening-cta" type="button" onclick="show('lock')">열어볼까</button>
+    </div>
+  </div>
+</section>
+<section id="lock" class="screen"><div class="inner"><div class="eyebrow">ONLY US</div><h2>우리만 아는 번호</h2><p>우리 둘만 알면 돼.</p><input id="pinInput" class="pin" inputmode="numeric" maxlength="12" placeholder="••••••"><div id="pinErr" class="notice"></div><button class="btn" onclick="checkPin(localStorage.getItem(NAME_KEY)?'inbox':'who')">들어가기</button></div></section>
+<section id="who" class="screen"><div class="inner">
+<div class="eyebrow">JUST ONCE</div>
+<h2>누구야?</h2>
+<p>둘 중 하나만 고르면 돼.</p>
+<div class="nickname-picks">
+  <button class="nickname-choice" onclick="chooseName('나')"><span>01</span><b>나</b></button>
+  <button class="nickname-choice" onclick="chooseName('상대')"><span>02</span><b>상대</b></button>
+</div>
+</div></section>
+<section id="inbox" class="screen"><div class="inner"><div class="top"><div><div class="eyebrow">OUR LETTERS</div><h2 style="margin:6px 0 0">우리 편지함</h2></div><div class="mini" onclick="show('lock')">닫기</div></div><div class="archive-intro">
+          <div id="archiveMood" class="archive-mood"></div>
+          <div id="archiveCount" class="archive-count"></div>
+        </div>
+        <div id="memorySpot" class="memory-spot"></div>
+        <div id="letterList" class="letters"></div></div><button class="fab" onclick="show('write')">＋</button></section>
+<section id="write" class="screen"><div class="inner"><div class="eyebrow">FOR YOU</div><h2>오늘 남기고 싶은 말</h2><input id="letterTitle" placeholder="제목 (선택)"><textarea id="letterBody" placeholder="짧아도 되고, 길어도 돼."></textarea><div id="writeErr" class="notice"></div><button class="btn" onclick="saveLetter()">남겨두기</button><button class="btn secondary" onclick="show('inbox')">다음에 쓸게</button></div></section>
+<script>
+const ROOM_KEY='nfc_letter_demo_letters_v3';
+const PIN_KEY='nfc_letter_demo_pin_v2';
+const NAME_KEY='nfc_letter_demo_name_v2';
+const NAME_ME_KEY='nfc_letter_demo_me_name_v1';
+const NAME_PARTNER_KEY='nfc_letter_demo_partner_name_v1';
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');scrollTo(0,0)}
+function getDisplayName(role){
+  if(role==='나') return localStorage.getItem(NAME_ME_KEY)||'나';
+  if(role==='상대') return localStorage.getItem(NAME_PARTNER_KEY)||'상대';
+  return role||'';
+}
+function chooseName(name){
+ localStorage.setItem(NAME_KEY,name);renderLetters();show('inbox');
+}
+function loadLetters(){try{return JSON.parse(localStorage.getItem(ROOM_KEY)||'[]')}catch(e){return[]}}
+function saveLetters(a){localStorage.setItem(ROOM_KEY,JSON.stringify(a))}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+function relativeAgo(ts){
+  const diff=Math.max(0,Date.now()-(ts||0));
+  const day=86400000;
+  const days=Math.floor(diff/day);
+  if(days<=0)return '오늘';
+  if(days===1)return '어제';
+  if(days<30)return `${days}일 전`;
+  const months=Math.floor(days/30);
+  if(months<12)return `${months}개월 전`;
+  const years=Math.floor(days/365);
+  if(years<2)return '1년 전';
+  return `${years}년 전`;
+}
+function renderLetters(){
+ const list=loadLetters().slice().sort((a,b)=>(b.ts||0)-(a.ts||0));
+ const box=document.getElementById('letterList'); if(!box)return;
+
+ const mood=document.getElementById('archiveMood');
+ const count=document.getElementById('archiveCount');
+ if(mood){
+   mood.textContent=list.length<=1?'첫 번째 말을 남긴 날부터':
+                    list.length<8?'조금씩, 우리의 말이 쌓이고 있어.':
+                    list.length<20?'말하지 못한 것들이 제법 쌓였다.':
+                    '우리도 꽤 많은 시간을 여기 남겼네.';
+ }
+ if(count) count.textContent=list.length?`지금까지 서로에게 남긴 편지 ${list.length}개`:'아직 첫 편지를 기다리는 중';
+
+ const memory=document.getElementById('memorySpot');
+ if(memory){
+   if(list.length>=8){
+     const old=list[list.length-1];
+     memory.innerHTML=`<div class="memory-label">그때 우리가 남긴 말</div>
+       <div class="memory-card">
+         <div class="memory-date">${relativeAgo(old.ts)}</div>
+         <b>${esc(old.title||'그날의 말')}</b>
+         <p>${esc((old.body||'').replace(/\n/g,' ').slice(0,70))}${(old.body||'').length>70?'…':''}</p>
+       </div>`;
+   }else memory.innerHTML='';
+ }
+
+ if(!list.length){
+   box.innerHTML=`<div class="card"><p>아직 남겨진 편지가 없어.<br>첫 번째 말을 남겨볼까.</p></div>`;
+   return;
+ }
+
+ let html='';
+ list.forEach((x,i)=>{
+   html+=`<article class="letter ${x.from==='나'?'mine':'theirs'}">
+     <div class="letter-head">
+       <div class="sender-badge">${esc(getDisplayName(x.from))}</div>
+       <time>${new Date(x.ts).toLocaleString('ko-KR')}</time>
+     </div>
+     <h3>${esc(x.title||'오늘 남긴 말')}</h3>
+     <p>${esc(x.body)}</p>
+   </article>`;
+   if(i<list.length-1){
+     const newer=x.ts||0, older=list[i+1].ts||0;
+     const days=Math.floor((newer-older)/86400000);
+     if(days>=2){
+       html+=`<div class="time-gap"><span>그리고 ${days}일 뒤,</span></div>`;
+     }
+   }
+ });
+ box.innerHTML=html;
+}
+function saveLetter(){
+ const title=document.getElementById('letterTitle').value.trim(),body=document.getElementById('letterBody').value.trim();
+ if(!body){document.getElementById('writeErr').textContent='한 줄만 남겨도 돼.';return}
+ const from=localStorage.getItem(NAME_KEY)||'나',arr=loadLetters();arr.push({title,body,from,ts:Date.now()});saveLetters(arr);
+ document.getElementById('letterTitle').value='';document.getElementById('letterBody').value='';renderLetters();show('inbox');
+}
+
+
+function seedSampleLetters(){
+ const demoKey='nfc_letter_demo_seed_v3';
+ if(!localStorage.getItem(demoKey)){
+   saveLetters([{"title": "오늘 문득", "body": "오늘은 그냥 네 생각이 나서 남김.\n별일은 없었는데 이런 날도 기록해두면 나중에 웃길 것 같아서.", "from": "나", "ts": 1789744906863}, {"title": "퇴근길", "body": "집 가는 길인데 갑자기 예전에 같이 걷던 길 생각났어.\n그땐 별거 아니었는데 지금 생각하면 꽤 좋았네.", "from": "상대", "ts": 1789399306863}, {"title": "고마웠던 거", "body": "내가 별말 안 했는데 먼저 챙겨준 거 고마웠어.\n그때 바로 말은 못 했음.", "from": "나", "ts": 1788621706863}, {"title": "아무 날도 아닌데", "body": "특별한 날 아니어도 같이 밥 먹고 소파에 누워있는 게 제일 편하더라.", "from": "상대", "ts": 1787239306863}, {"title": "다음에 꼭", "body": "날 좀 선선해지면 둘이 아무 데나 하루 놀러 가자.\n계획 너무 세우지 말고 그냥.", "from": "나", "ts": 1785338506863}, {"title": "조금 미안", "body": "요즘 피곤하다고 말투가 짧았던 것 같아.\n알면서도 또 그랬네. 미안.", "from": "상대", "ts": 1782573706863}, {"title": "웃긴 기록", "body": "오늘 네가 한 말 아직도 생각나서 웃김.\n본인은 왜 웃긴지 모르는 게 제일 웃겨.", "from": "나", "ts": 1779636106863}, {"title": "그날", "body": "그날은 좀 힘들었는데 옆에 있어줘서 괜찮았어.\n굳이 해결해주지 않아도 되는 날도 있더라.", "from": "상대", "ts": 1776266506863}, {"title": "평범한 주말", "body": "점심 먹고 낮잠 자고 저녁 먹은 게 끝인데,\n이상하게 이런 날이 오래 기억나.", "from": "나", "ts": 1772378506863}, {"title": "고맙다는 말", "body": "매번 당연한 것처럼 지나가지만 사실 고마운 게 많아.\n다 쓰려면 길어지니 오늘은 여기까지만.", "from": "상대", "ts": 1768317706863}, {"title": "우리다운 하루", "body": "계획한 건 하나도 없는데 결국 잘 놀았음.\n역시 우리답다.", "from": "나", "ts": 1763738506863}, {"title": "갑자기 생각나서", "body": "처음 만났을 때보다 지금이 더 편하고 더 웃긴 것 같아.\n좋은 쪽으로.", "from": "상대", "ts": 1758727306863}, {"title": "비 오는 날", "body": "비 오는 날 같이 우산 쓰고 걷던 거 생각났어.\n한쪽 어깨 젖는 건 여전하겠지.", "from": "나", "ts": 1753370506863}, {"title": "그때는 몰랐는데", "body": "그때 네가 해준 말이 나중에 생각보다 오래 남더라.\n그래서 나도 여기 남겨둠.", "from": "상대", "ts": 1747668106863}, {"title": "괜히 쓰는 편지", "body": "딱히 할 말은 없는데 그냥 남기고 싶었어.\n이런 것도 나중엔 기록이겠지.", "from": "나", "ts": 1742397706863}, {"title": "그날 저녁", "body": "같이 먹었던 저녁은 기억 안 나는데 네가 했던 말은 기억나.\n그게 좀 신기함.", "from": "상대", "ts": 1737645706863}, {"title": "한 번쯤", "body": "가끔은 우리가 얼마나 오래 같이 있을지 궁금해.\n근데 일단 다음 주말부터 잘 보내자.", "from": "나", "ts": 1732634506863}, {"title": "오늘의 결론", "body": "싸워도 결국 다시 말 걸고 밥 같이 먹는 거 보면 우리 꽤 끈질기다.", "from": "상대", "ts": 1728746506863}, {"title": "처음 남기는 말", "body": "이런 걸 왜 쓰나 싶었는데 막상 적으니까 괜찮네.\n나중에 읽으면 조금 민망할 것 같기도 하고.", "from": "나", "ts": 1725463306863}, {"title": "여기서 시작", "body": "오늘부터 가끔씩 남겨보자.\n엄청 대단한 말 아니어도 괜찮고,\n그때의 우리가 무슨 생각했는지만 남아도 좋겠다.", "from": "상대", "ts": 1722266506863}]);
+   localStorage.setItem(demoKey,'1');
+ }
+}
+function firstSetup(defaultName){if(!localStorage.getItem(PIN_KEY))localStorage.setItem(PIN_KEY,'070707');seedSampleLetters();if(!localStorage.getItem(NAME_KEY))localStorage.setItem(NAME_KEY,defaultName)}
+function checkPin(next){
+ const val=document.getElementById('pinInput').value.trim(),pin=localStorage.getItem(PIN_KEY)||'070707';
+ if(val===pin){show(next);renderLetters()}else document.getElementById('pinErr').textContent='닫기번호가 맞지 않아요.'
+}
+window.addEventListener('DOMContentLoaded',renderLetters);
+firstSetup('상대');</script></body></html>
