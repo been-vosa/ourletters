@@ -1,0 +1,1063 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>우리에게 남겨진 말들 · 관리자키</title><style>
+:root{--bg:#f4efe7;--paper:#fffdf9;--ink:#27221d;--mut:#766f67;--line:#e6d9cc;--accent:#5c736b;--warm:#d79370}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 100% 0,#eed9cf 0,transparent 28%),radial-gradient(circle at 0 70%,#dde8e2 0,transparent 24%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+button,input,textarea{font:inherit}.screen{display:none;min-height:100svh;padding:22px}.screen.on{display:flex}.inner{width:min(100%,680px);margin:auto}.eyebrow{font-size:10px;letter-spacing:.18em;font-weight:800;opacity:.5}
+h1{font-size:clamp(42px,12vw,72px);line-height:1.02;letter-spacing:-.06em;margin:14px 0 16px}h2{font-size:30px;letter-spacing:-.04em;margin:0 0 14px}p{color:var(--mut);line-height:1.75;font-size:14px}
+.btn{width:100%;border:0;border-radius:16px;padding:15px 16px;margin-top:12px;background:var(--ink);color:#fff;font-weight:800}.btn.secondary{background:#ece3d8;color:var(--ink)}
+.card{background:rgba(255,253,249,.92);border:1px solid var(--line);border-radius:24px;padding:18px;margin:12px 0;box-shadow:0 14px 40px #6b513b12}.pin{font-size:22px;text-align:center;letter-spacing:.25em}
+input,textarea{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;outline:none}textarea{min-height:180px;resize:vertical;line-height:1.7}
+.letters{display:grid;gap:12px}.letter{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px}.letter time{font-size:10px;color:#9a9189}.letter h3{font-size:18px;margin:8px 0}.letter p{white-space:pre-wrap;color:#4d4741;margin:8px 0}.from{font-size:11px;font-weight:800;color:var(--warm)}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}.mini{font-size:11px;color:var(--mut);cursor:pointer}.fab{position:fixed;right:18px;bottom:18px;width:58px;height:58px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:28px;box-shadow:0 10px 30px #0003}
+.notice{font-size:11px;background:#f2e7dc;border-radius:13px;padding:11px;margin-top:10px;color:#6a625a}.admin-dot{width:8px;height:8px;border-radius:50%;background:#68877b;display:inline-block;margin-right:5px}.admin-panel{border:1px dashed #bda995;background:#fff8ee;border-radius:18px;padding:14px;margin-top:12px}
+@media(max-width:430px){.screen{padding:18px}.card,.letter{border-radius:20px}}
+
+/* visual polish v2 */
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+  background-image:
+    linear-gradient(rgba(70,56,45,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(70,56,45,.035) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.inner{position:relative;z-index:1}
+.screen.on{animation:screenIn .36s ease}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.eyebrow{display:inline-flex;align-items:center;gap:7px}
+.eyebrow:before{content:"";width:18px;height:1px;background:currentColor;opacity:.35}
+h1,h2{font-weight:900;text-wrap:balance}
+.open-deco{display:flex;gap:8px;margin:20px 0 0}
+.open-deco i{display:block;width:34px;height:5px;border-radius:99px;background:#d8c7b9}
+.open-deco i:nth-child(2){width:16px;background:#8ea49b}
+.open-deco i:nth-child(3){width:9px;background:#d79370}
+.quote-card{
+  margin-top:22px;padding:18px 18px 16px;border-radius:22px;
+  background:linear-gradient(180deg,#fffdf9,#fbf6ef);
+  border:1px solid #e7dacd;
+  box-shadow:0 18px 40px #725d4812;
+}
+.quote-card .qmark{font-size:38px;line-height:.7;color:#caa88e}
+.quote-card p{margin:8px 0 0;color:#49423d;font-size:14px}
+.letter{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#fffefb 0%,#fffaf4 100%);
+}
+.letter:after{
+  content:"";position:absolute;right:-28px;top:-28px;width:90px;height:90px;border-radius:50%;
+  border:1px solid rgba(90,115,107,.14);
+}
+.letter time{letter-spacing:.04em;text-transform:uppercase}
+.letter h3{font-size:20px;letter-spacing:-.03em}
+.letter p{font-size:14px;line-height:1.85}
+.from{margin-top:14px;padding-top:12px;border-top:1px dashed #e3d6c9}
+.top{padding-bottom:8px;border-bottom:1px solid rgba(80,60,45,.08)}
+.fab{display:grid;place-items:center;transition:.18s transform,.18s box-shadow}
+.fab:active{transform:scale(.95)}
+.btn{transition:.18s transform,.18s opacity}.btn:active{transform:translateY(1px);opacity:.9}
+.pin{background:#fffdf9;font-weight:800}
+.lock-hint{
+  display:flex;align-items:flex-start;gap:10px;margin-top:16px;padding:12px 13px;
+  background:#fff8ef;border:1px solid #eadbc9;border-radius:14px;color:#70675f;font-size:11px;line-height:1.6
+}
+.lock-hint b{color:#3c352f}
+.inbox-intro{margin:0 0 16px;color:#6e665f;font-size:12px}
+@media(max-width:430px){
+  .letter p{font-size:13px}
+  .fab{right:16px;bottom:16px}
+}
+
+
+/* v3 long-list/fab fix */
+#inbox .inner{
+  padding-bottom:120px;
+}
+.fab{
+  z-index:50;
+  bottom:max(20px,env(safe-area-inset-bottom));
+  right:max(18px,env(safe-area-inset-right));
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+  border:4px solid rgba(244,239,231,.9);
+}
+.fab:before{
+  content:"오늘의 마음 남기기";
+  position:absolute;
+  right:66px;
+  white-space:nowrap;
+  padding:9px 12px;
+  border-radius:12px;
+  background:rgba(39,34,29,.92);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  opacity:.96;
+  pointer-events:none;
+}
+@media(max-width:430px){
+  #inbox .inner{padding-bottom:132px}
+  .fab{width:62px;height:62px;bottom:max(18px,env(safe-area-inset-bottom));right:16px}
+  .fab:before{right:70px}
+}
+
+
+/* v4 conversational letter layout */
+.letters{display:flex;flex-direction:column;gap:15px;align-items:stretch}
+.letter{width:min(88%,560px);margin:0;transition:transform .18s ease}
+.letter.mine{align-self:flex-end;border-left:1px solid var(--line);border-right:4px solid #78958a;border-radius:22px 8px 22px 22px}
+.letter.theirs{align-self:flex-start;border-left:4px solid #d99a79;border-radius:8px 22px 22px 22px}
+.letter.mine .letter-head{flex-direction:row-reverse}
+.letter.mine time{text-align:left}
+.letter.theirs time{text-align:right}
+.letter.mine h3,.letter.mine p{text-align:left}
+.letter.theirs h3,.letter.theirs p{text-align:left}
+.sender-badge{min-width:44px;justify-content:center}
+@media(max-width:430px){
+ .letter{width:91%}
+ .letters{gap:13px}
+}
+
+
+.admin-label{display:block;font-size:11px;font-weight:800;color:var(--mut);margin:10px 0 6px}
+
+/* ===== v5 visual redesign ===== */
+:root{
+  --bg:#eee8df;
+  --paper:#fffaf3;
+  --paper2:#fbf4ea;
+  --ink:#26211c;
+  --mut:#736b63;
+  --line:#decfc1;
+  --accent:#6f8a80;
+  --accent2:#bd7a5f;
+  --shadow:0 18px 45px rgba(73,55,40,.12);
+}
+html{background:#e9e2d8}
+body{
+  min-height:100svh;
+  background:
+    radial-gradient(circle at 8% 10%,rgba(255,255,255,.72),transparent 24%),
+    radial-gradient(circle at 92% 2%,rgba(204,166,147,.22),transparent 27%),
+    radial-gradient(circle at 12% 92%,rgba(111,138,128,.12),transparent 24%),
+    linear-gradient(180deg,#f3eee7 0%,#ece4da 100%);
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;mix-blend-mode:multiply;
+  background-image:
+    radial-gradient(circle at 20% 20%,#8b7662 0 0.7px,transparent .8px),
+    radial-gradient(circle at 80% 30%,#8b7662 0 0.6px,transparent .7px);
+  background-size:22px 24px,28px 26px;
+}
+.screen{
+  position:relative;
+  overflow:hidden;
+}
+.screen:before{
+  content:"";position:absolute;inset:auto -60px -80px auto;
+  width:180px;height:180px;border-radius:50%;
+  border:1px solid rgba(100,80,60,.07);
+}
+.inner{padding:8px 0 18px}
+.eyebrow{
+  color:#80766e;
+  font-size:9px;
+  letter-spacing:.22em;
+  font-weight:900;
+}
+.eyebrow:before{width:26px;background:#a9998c}
+h1{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-weight:700;
+  font-size:clamp(50px,14vw,82px);
+  line-height:.95;
+  letter-spacing:-.055em;
+}
+h2{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-weight:700;
+  font-size:clamp(30px,8vw,44px);
+  letter-spacing:-.045em;
+  line-height:1.08;
+}
+p{font-size:14px;line-height:1.8}
+
+/* opening */
+#open .inner{
+  padding-top:8vh;
+}
+#open h1{max-width:560px;margin-top:22px}
+#open p{max-width:470px;font-size:15px}
+.open-deco{margin-top:28px;gap:7px}
+.open-deco i{height:4px}
+.quote-card{
+  position:relative;
+  padding:22px 20px 20px;
+  margin-top:28px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,249,241,.9));
+  border:1px solid rgba(207,190,174,.85);
+  box-shadow:var(--shadow);
+}
+.quote-card:before{
+  content:"";position:absolute;left:18px;top:-7px;width:42px;height:13px;
+  background:rgba(214,197,175,.58);
+  transform:rotate(-3deg);
+}
+.quote-card .qmark{font-family:Georgia,serif;color:#c7987c;font-size:48px}
+.quote-card p{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:16px;line-height:1.65}
+#open .btn{
+  margin-top:20px;
+}
+
+/* buttons */
+.btn{
+  min-height:52px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#302a25,#211d19);
+  box-shadow:0 10px 24px rgba(49,38,29,.14);
+  letter-spacing:-.01em;
+}
+.btn.secondary{
+  background:#e9ded1;
+  color:#342d27;
+  box-shadow:none;
+  border:1px solid #ddccbc;
+}
+.btn:hover{filter:brightness(1.02)}
+.btn:active{transform:translateY(1px) scale(.995)}
+
+/* lock */
+#lock .inner{
+  max-width:520px;
+}
+#lock:after{
+  content:"ONLY US";position:absolute;right:-16px;top:56px;
+  font-family:Georgia,serif;font-size:58px;letter-spacing:.04em;
+  color:rgba(67,54,43,.035);transform:rotate(90deg);
+}
+.pin{
+  margin-top:8px;
+  padding:17px;
+  border-radius:18px;
+  background:rgba(255,252,247,.94);
+  box-shadow:inset 0 0 0 1px rgba(140,120,100,.05);
+}
+.lock-hint{
+  border-radius:16px;
+  background:rgba(255,250,243,.72);
+}
+
+/* nickname pick */
+.nickname-picks{gap:14px}
+.nickname-choice{
+  min-height:122px;
+  padding:18px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(160deg,#fffdf9,#f8efe5);
+  box-shadow:var(--shadow);
+}
+.nickname-choice:after{
+  content:"";position:absolute;width:70px;height:70px;border-radius:50%;
+  right:-20px;bottom:-28px;border:1px solid rgba(110,90,70,.12);
+}
+.nickname-choice span{font-weight:900}
+.nickname-choice b{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;font-size:27px}
+
+/* inbox */
+#inbox{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.22),transparent 16%),
+    transparent;
+}
+#inbox .inner{max-width:760px}
+.top{
+  position:sticky;
+  top:0;
+  z-index:20;
+  margin:-2px -4px 18px;
+  padding:12px 4px 15px;
+  background:linear-gradient(180deg,rgba(239,233,224,.96),rgba(239,233,224,.88),rgba(239,233,224,0));
+  backdrop-filter:blur(8px);
+  border-bottom:0;
+}
+.top h2{font-size:36px}
+.inbox-intro{
+  padding:0 2px 8px;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-style:italic;
+  font-size:13px;
+  color:#7f756d;
+}
+.letters{gap:18px}
+.letter{
+  width:min(86%,560px);
+  padding:20px 20px 18px;
+  border:1px solid rgba(218,202,187,.96);
+  box-shadow:0 10px 26px rgba(68,51,38,.075);
+  backdrop-filter:blur(2px);
+}
+.letter.mine{
+  background:
+    linear-gradient(155deg,#f7fbf8 0%,#eef5f1 100%);
+  border-right:4px solid #78958a;
+  border-left:1px solid #d6e2dc;
+}
+.letter.theirs{
+  background:
+    linear-gradient(155deg,#fffaf4 0%,#f9eee5 100%);
+  border-left:4px solid #d69673;
+}
+.letter.mine:before,
+.letter.theirs:before{
+  content:"";position:absolute;top:14px;width:36px;height:8px;
+  background:rgba(205,190,171,.35);
+}
+.letter.mine:before{right:18px;transform:rotate(2deg)}
+.letter.theirs:before{left:18px;transform:rotate(-2deg)}
+.letter-head{margin-top:7px}
+.sender-badge{
+  padding:7px 11px;
+  font-size:10px;
+  letter-spacing:.02em;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
+}
+.letter.mine .sender-badge{background:#dceae3;color:#31584c}
+.letter.theirs .sender-badge{background:#f1ddcf;color:#8d5038}
+.letter time{
+  font-size:9px;
+  color:#9b9188;
+}
+.letter h3{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-size:22px;
+  line-height:1.2;
+  margin:14px 0 9px;
+}
+.letter p{
+  font-size:14px;
+  line-height:1.9;
+  color:#4c453f;
+}
+.fab{
+  width:auto;
+  min-width:62px;
+  height:62px;
+  padding:0 18px;
+  border-radius:22px;
+  font-size:24px;
+  background:linear-gradient(180deg,#2f2924,#1f1b18);
+  border:3px solid rgba(239,233,224,.88);
+}
+.fab:before{
+  right:68px;
+  background:#2b2521;
+  box-shadow:0 8px 20px rgba(0,0,0,.14);
+}
+
+/* writing */
+#write .inner{max-width:620px}
+#write input,#write textarea{
+  background:rgba(255,253,249,.92);
+  border-color:#ddcfc2;
+  box-shadow:0 10px 28px rgba(69,51,37,.05);
+}
+#write textarea{
+  min-height:280px;
+  padding:18px;
+  font-size:15px;
+  line-height:1.9;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,253,249,.94) 0,
+      rgba(255,253,249,.94) 31px,
+      rgba(122,104,88,.08) 32px
+    );
+}
+
+/* admin */
+#admin .inner,#adminLock .inner{max-width:640px}
+.admin-panel{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid #d9c9b9;
+  background:linear-gradient(180deg,#fff9f1,#f8eee3);
+  box-shadow:0 10px 25px rgba(80,60,45,.06);
+}
+.admin-panel b{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-size:18px;
+}
+.admin-panel p{font-size:12px}
+.admin-dot{
+  box-shadow:0 0 0 5px rgba(104,135,123,.12);
+}
+
+@media(max-width:430px){
+  #open .inner{padding-top:5vh}
+  h1{font-size:52px}
+  .letter{width:91%;padding:18px}
+  .letter h3{font-size:20px}
+  .fab:before{display:none}
+  .fab{min-width:60px;width:60px;padding:0}
+}
+
+
+/* v6 tone & typography */
+body{
+  font-family:ui-rounded,"SF Pro Rounded","Pretendard","Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+h1,h2,.quote-card p,.letter h3,.admin-panel b,.nickname-choice b{
+  font-family:ui-rounded,"SF Pro Rounded","Pretendard","Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+h1{
+  font-weight:800!important;
+  letter-spacing:-.065em!important;
+}
+h2{
+  font-weight:800!important;
+  letter-spacing:-.05em!important;
+}
+.quote-card p{
+  font-style:normal!important;
+  font-weight:700;
+  letter-spacing:-.025em;
+}
+.letter h3{
+  font-weight:800;
+  letter-spacing:-.035em;
+}
+.letter p{
+  font-weight:500;
+  letter-spacing:-.018em;
+}
+.eyebrow{
+  letter-spacing:.14em;
+  font-weight:800;
+}
+.admin-panel p:empty{display:none}
+
+
+/* v7 shared opening + small smile */
+.opening-smile{
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px dashed rgba(135,111,91,.22);
+  color:#8a7e74;
+  font-size:12px;
+  line-height:1.65;
+  letter-spacing:-.02em;
+}
+.opening-smile b{
+  color:#5e554e;
+  font-weight:800;
+}
+
+
+/* v8 archive storytelling */
+.archive-intro{
+  margin:2px 0 20px;
+  padding:16px 17px;
+  border-left:3px solid rgba(111,138,128,.55);
+  background:rgba(255,251,245,.46);
+  border-radius:0 16px 16px 0;
+}
+.archive-mood{
+  font-size:14px;
+  font-weight:750;
+  color:#514941;
+  letter-spacing:-.025em;
+}
+.archive-count{
+  margin-top:6px;
+  font-size:10px;
+  color:#958a81;
+  letter-spacing:.02em;
+}
+.time-gap{
+  align-self:center;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:1px 0;
+  color:#a19489;
+  font-size:10px;
+  white-space:nowrap;
+}
+.time-gap:before,.time-gap:after{
+  content:"";height:1px;flex:1;
+  background:linear-gradient(90deg,transparent,rgba(145,125,108,.18));
+}
+.time-gap:after{background:linear-gradient(90deg,rgba(145,125,108,.18),transparent)}
+.time-gap span{
+  padding:4px 7px;
+  font-style:italic;
+}
+.memory-spot{margin:0 0 20px}
+.memory-label{
+  font-size:9px;
+  letter-spacing:.12em;
+  font-weight:900;
+  color:#8d8177;
+  margin:0 0 8px 4px;
+}
+.memory-card{
+  position:relative;
+  padding:16px 18px;
+  border-radius:18px;
+  background:rgba(246,237,226,.75);
+  border:1px dashed rgba(177,151,129,.38);
+}
+.memory-card:before{
+  content:"↺";
+  position:absolute;right:14px;top:11px;
+  font-size:18px;color:rgba(116,98,82,.22);
+}
+.memory-date{font-size:9px;color:#9c9086;margin-bottom:6px}
+.memory-card b{font-size:14px;color:#554b43}
+.memory-card p{
+  margin:5px 24px 0 0;
+  font-size:11px;
+  line-height:1.65;
+  color:#82766d;
+}
+.opening-smile{
+  font-style:normal!important;
+  font-size:13px!important;
+}
+.opening-smile b{
+  display:inline-block;
+  margin-top:2px;
+  color:#4e4640;
+}
+
+
+/* v9 opening button fix */
+#open .inner{
+  display:block!important;
+}
+#open .btn{
+  width:auto!important;
+  min-width:150px!important;
+  max-width:220px!important;
+  min-height:50px!important;
+  height:auto!important;
+  padding:14px 24px!important;
+  margin:22px 0 0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:static!important;
+  border-radius:16px!important;
+  font-size:15px!important;
+  line-height:1!important;
+}
+#open .quote-card{
+  max-width:520px;
+}
+@media(max-width:430px){
+  #open .btn{
+    width:100%!important;
+    max-width:none!important;
+    display:flex!important;
+  }
+}
+
+
+/* v10 opening structural fix + 20 letter demo */
+#open{
+  display:none;
+  min-height:100svh;
+  padding:22px!important;
+}
+#open.on{
+  display:flex!important;
+  align-items:flex-start!important;
+}
+#open .opening-inner{
+  width:min(100%,680px)!important;
+  margin:0 auto!important;
+  padding:7vh 0 42px!important;
+  display:block!important;
+  position:relative!important;
+}
+#open .opening-lead{
+  max-width:520px;
+}
+#open .quote-card{
+  width:100%!important;
+  max-width:520px!important;
+  margin:28px 0 0!important;
+}
+#open .opening-actions{
+  display:block!important;
+  width:100%!important;
+  max-width:520px!important;
+  margin:20px 0 0!important;
+  padding:0!important;
+  position:static!important;
+}
+#open .opening-cta{
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  display:flex!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  height:54px!important;
+  min-height:54px!important;
+  margin:0!important;
+  padding:0 22px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:17px!important;
+  font-size:15px!important;
+  line-height:1!important;
+}
+@media(max-width:430px){
+  #open{padding:18px!important}
+  #open .opening-inner{padding-top:4vh!important}
+  #open .quote-card,#open .opening-actions{max-width:none!important}
+}
+
+
+/* v11 opening copy restore */
+#open .quote-card{
+  display:block!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:22px 20px 20px!important;
+}
+#open .quote-card .qmark{
+  display:block!important;
+}
+#open .quote-card p,
+#open .opening-smile{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+#open .opening-actions{
+  margin-top:18px!important;
+}
+#open .opening-cta{
+  width:100%!important;
+  max-width:520px!important;
+}
+
+
+/* admin UI v2 */
+.admin-ui{max-width:720px;padding-bottom:60px}
+.admin-hero{margin-bottom:22px}
+.admin-hero p{margin-top:4px}
+.admin-group{
+  margin:18px 0;
+  padding:16px;
+  border-radius:22px;
+  background:rgba(255,250,243,.72);
+  border:1px solid rgba(214,197,181,.92);
+  box-shadow:0 12px 28px rgba(70,52,38,.05);
+}
+.admin-group-head{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding-bottom:12px;
+  margin-bottom:6px;
+  border-bottom:1px solid rgba(130,110,90,.08);
+}
+.admin-group-head>span{
+  width:32px;height:32px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#2c2722;color:#fff;
+  font-size:10px;font-weight:900;
+}
+.admin-group-head b{display:block;font-size:17px}
+.admin-group-head small{display:block;margin-top:2px;color:#9a8f86;font-size:10px}
+.setting-row{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px dashed rgba(145,125,107,.16);
+}
+.setting-row:last-child{border-bottom:0}
+.setting-row strong{display:block;font-size:14px}
+.setting-row span{display:block;margin-top:4px;color:#93877d;font-size:10px;line-height:1.55}
+.setting-btn{
+  flex:0 0 auto;
+  border:1px solid #dac9ba;
+  background:#fffaf4;
+  border-radius:13px;
+  padding:9px 12px;
+  color:#443c35;
+  font-size:11px;
+  font-weight:800;
+}
+.danger-lite strong{color:#8e5145}
+.key-status-card{
+  margin:10px 0 4px;
+  padding:14px;
+  border-radius:16px;
+  background:#eef5f1;
+  border:1px solid #d8e6df;
+}
+.key-status-card>div{display:flex;align-items:center;gap:8px}
+.key-status-card strong{font-size:12px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#6b8d80;box-shadow:0 0 0 5px rgba(107,141,128,.12)}
+.key-status-card code{display:block;margin-top:8px;color:#7a726b;font-size:10px;word-break:break-all}
+.modal-card{max-width:560px}
+.modal-card input{margin-top:8px}
+.device-item{
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  padding:14px 0;border-bottom:1px dashed rgba(145,125,107,.16)
+}
+.device-item b{display:block}.device-item span{display:block;font-size:10px;color:#90867e;margin-top:3px}
+.device-item em{font-style:normal;font-size:10px;color:#6d867b}
+.fake-url,.dropzone{
+  margin:16px 0;padding:15px;border-radius:15px;background:#fffaf4;border:1px dashed #cfbdaa;
+  font-size:11px;color:#655b53;word-break:break-all
+}
+.dropzone{text-align:center;padding:28px 15px}
+.danger-btn{background:#7e4338!important}
+
+
+/* v12 neutral ivory + sage palette */
+:root{
+  --bg:#f1f0eb!important;
+  --paper:#fbfaf7!important;
+  --paper2:#f5f4ef!important;
+  --ink:#292b28!important;
+  --mut:#73766f!important;
+  --line:#d8d9d2!important;
+  --accent:#71877d!important;
+  --accent2:#b7836e!important;
+  --shadow:0 18px 45px rgba(54,61,56,.09)!important;
+}
+html{background:#ecece7!important}
+body{
+  background:
+    radial-gradient(circle at 8% 10%,rgba(255,255,255,.82),transparent 25%),
+    radial-gradient(circle at 92% 3%,rgba(138,160,149,.13),transparent 28%),
+    radial-gradient(circle at 10% 92%,rgba(111,135,124,.10),transparent 25%),
+    linear-gradient(180deg,#f4f3ef 0%,#ecece7 100%)!important;
+}
+body:after{opacity:.08!important}
+.quote-card{
+  background:linear-gradient(145deg,rgba(252,252,249,.96),rgba(245,246,241,.94))!important;
+  border-color:#d9dad3!important;
+}
+.quote-card:before{background:rgba(190,196,185,.55)!important}
+.quote-card .qmark{color:#8da096!important}
+.open-deco i{background:#c9ccc4!important}
+.open-deco i:nth-child(2){background:#81978c!important}
+.open-deco i:nth-child(3){background:#b58a78!important}
+#inbox .top{
+  background:linear-gradient(180deg,rgba(241,240,235,.97),rgba(241,240,235,.90),rgba(241,240,235,0))!important;
+}
+.archive-intro{background:rgba(249,249,245,.62)!important}
+.letter.mine{
+  background:linear-gradient(155deg,#f7faf8 0%,#edf3ef 100%)!important;
+}
+.letter.theirs{
+  background:linear-gradient(155deg,#fbfaf7 0%,#f4efeb 100%)!important;
+  border-left-color:#b78b78!important;
+}
+.letter.theirs .sender-badge{background:#eee1da!important;color:#80594a!important}
+.memory-card{background:rgba(237,239,233,.78)!important;border-color:rgba(129,145,135,.34)!important}
+.admin-group,.admin-panel{
+  background:linear-gradient(180deg,rgba(250,250,247,.94),rgba(243,244,239,.94))!important;
+  border-color:#d8dad2!important;
+}
+.key-status-card{background:#edf3ef!important;border-color:#d4e0d9!important}
+.setting-btn,.fake-url,.dropzone{
+  background:#fafaf7!important;
+  border-color:#d3d5cd!important;
+}
+.btn.secondary{background:#e6e7e1!important;border-color:#d5d7cf!important}
+.fab{border-color:rgba(241,240,235,.92)!important}
+
+</style></head><body>
+<section id="open" class="screen on">
+  <div class="inner opening-inner">
+    <div class="eyebrow">JUST FOR US</div>
+    <h1>내가 남긴 말도,<br>네가 남긴 말도.</h1>
+    <p class="opening-lead">하고 싶은 말이 생기면, 그냥 여기 남겨두자.</p>
+
+    <div class="open-deco"><i></i><i></i><i></i></div>
+
+    <div class="quote-card">
+      <div class="qmark">“</div>
+      <p>오늘의 마음이, 나중엔 우리가 지나온 시간이 되겠지.</p>
+      <div class="opening-smile">
+        시간이 많이 지나도<br>
+        이 안의 말들을 읽으면<br>
+        <b>지금의 우리가 다시 생각났으면 좋겠다.</b>
+      </div>
+    </div>
+
+    <div class="opening-actions">
+      <button class="btn opening-cta" type="button" onclick="show('lock')">열어볼까</button>
+    </div>
+  </div>
+</section>
+<section id="lock" class="screen"><div class="inner"><div class="eyebrow">ONLY US</div><h2>우리만 아는 번호</h2><input id="pinInput" class="pin" inputmode="numeric" maxlength="12" placeholder="••••••"><div id="pinErr" class="notice"></div><button class="btn" onclick="checkPin('inbox')">들어가기</button></div></section>
+
+<section id="inbox" class="screen"><div class="inner"><div class="top"><div><div class="eyebrow">OUR LETTERS · ONLINE</div><h2 id="adminTap" style="margin:6px 0 0">우리 편지함</h2></div><div class="mini" onclick="show('lock')">닫기</div></div><div class="archive-intro">
+          <div id="archiveMood" class="archive-mood"></div>
+          <div id="archiveCount" class="archive-count"></div>
+        </div>
+        <div id="memorySpot" class="memory-spot"></div>
+        <div id="letterList" class="letters"></div></div><button class="fab" onclick="show('write')">＋</button></section>
+<section id="write" class="screen"><div class="inner"><div class="eyebrow">FOR YOU</div><h2>오늘 남기고 싶은 말</h2><input id="letterTitle" placeholder="제목 (선택)"><textarea id="letterBody" placeholder="짧아도 되고, 길어도 돼."></textarea><div id="writeErr" class="notice"></div><button class="btn" onclick="saveLetter()">남겨두기</button><button class="btn secondary" onclick="show('inbox')">다음에 쓸게</button></div></section>
+<section id="adminLock" class="screen"><div class="inner"><div class="eyebrow">ADMIN KEY</div><h2>관리자 닫기</h2><p>이건 너한테는 안 보이는 문.</p><input id="adminPin" class="pin" inputmode="numeric" placeholder="비밀 번호"><div id="adminErr" class="notice"></div><button class="btn" onclick="if(adminPin.value==='482915'){show('admin');loadAdminNames();}else adminErr.textContent='비밀 번호이 맞지 않아요.'">관리자 모드 들어가기</button><button class="btn secondary" onclick="show('inbox')">돌아갈게</button></div></section>
+
+<section id="admin" class="screen">
+  <div class="inner admin-ui">
+    <div class="admin-hero">
+      <div class="eyebrow"><span class="admin-dot"></span>PRIVATE ADMIN</div>
+      <h2>숨은 설정</h2>
+      <p>평소엔 안 보여도 돼. 필요할 때만 꺼내보는 곳.</p>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>01</span>
+        <div>
+          <b>편지함 설정</b>
+          <small>둘의 이름과 잠금번호</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>두 사람 이름</strong>
+          <span>편지에 보이는 이름을 바꿔.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('nameSettings')">열기</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>편지함 PIN</strong>
+          <span>둘만 아는 번호를 바꿔.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('pinSettings')">변경</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>02</span>
+        <div>
+          <b>보안</b>
+          <small>혹시 모를 때를 위한 것들</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>관리자 PIN</strong>
+          <span>이 숨은 화면을 여는 번호.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('adminPinSettings')">변경</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>접속 기기</strong>
+          <span>최근 들어온 기기를 확인해.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('devices')">보기</button>
+      </div>
+
+      <div class="setting-row danger-lite">
+        <div>
+          <strong>모든 기기 로그아웃</strong>
+          <span>다시 PIN을 입력해야 들어올 수 있게.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('logoutAll')">실행</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>03</span>
+        <div>
+          <b>키링</b>
+          <small>NFC 주소 관리</small>
+        </div>
+      </div>
+
+      <div class="key-status-card">
+        <div>
+          <span class="status-dot"></span>
+          <strong>현재 주소 사용 중</strong>
+        </div>
+        <code>…/r/7Kx9-Qm2p</code>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>새 주소 발급</strong>
+          <span>키링을 잃어버렸거나 새로 바꿀 때.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('newAddress')">만들기</button>
+      </div>
+
+      <div class="setting-row danger-lite">
+        <div>
+          <strong>기존 주소 폐기</strong>
+          <span>지금 주소로는 더 이상 못 들어오게.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('revokeAddress')">폐기</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <div class="admin-group-head">
+        <span>04</span>
+        <div>
+          <b>기록</b>
+          <small>혹시 몰라서 챙겨두는 곳</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>백업</strong>
+          <span>지금까지의 편지를 따로 보관해.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('backup')">내보내기</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>복원</strong>
+          <span>백업해둔 기록을 다시 가져와.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="show('restore')">가져오기</button>
+      </div>
+    </div>
+
+    <button class="btn" type="button" onclick="show('inbox')">편지함으로</button>
+  </div>
+</section>
+
+<section id="nameSettings" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">NAMES</div><h2>두 사람 이름</h2>
+  <p>편지에 보이는 이름만 바뀌어.</p>
+  <label class="admin-label">내 이름</label>
+  <input value="삼대">
+  <label class="admin-label">상대방 이름</label>
+  <input value="나">
+  <button class="btn">저장</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="pinSettings" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">LETTER PIN</div><h2>편지함 PIN</h2>
+  <input class="pin" placeholder="새 PIN">
+  <button class="btn">바꾸기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="adminPinSettings" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">ADMIN PIN</div><h2>관리자 PIN</h2>
+  <input class="pin" placeholder="현재 PIN">
+  <input class="pin" style="margin-top:10px" placeholder="새 PIN">
+  <button class="btn">바꾸기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="devices" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">DEVICES</div><h2>접속 기기</h2>
+  <div class="device-item"><div><b>내 폰</b><span>방금 전 접속</span></div><em>현재 기기</em></div>
+  <div class="device-item"><div><b>상대 폰</b><span>어제 접속</span></div><em>정상</em></div>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="logoutAll" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">SIGN OUT</div><h2>모든 기기에서 나갈까?</h2>
+  <p>다음에 들어올 땐 둘 다 다시 PIN을 입력해야 해.</p>
+  <button class="btn">모두 로그아웃</button>
+  <button class="btn secondary" onclick="show('admin')">취소</button>
+</div></section>
+
+<section id="newAddress" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">NEW NFC URL</div><h2>새 주소 만들기</h2>
+  <p>새 주소를 만들면 새 키링에 다시 넣으면 돼.</p>
+  <div class="fake-url">https://ourletters.kr/r/Q8m2-Lx7p</div>
+  <button class="btn">새 주소 발급</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="revokeAddress" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">REVOKE</div><h2>기존 주소를 폐기할까?</h2>
+  <p>폐기하면 지금 키링 주소로는 더 이상 들어올 수 없어.</p>
+  <button class="btn danger-btn">기존 주소 폐기</button>
+  <button class="btn secondary" onclick="show('admin')">취소</button>
+</div></section>
+
+<section id="backup" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">BACKUP</div><h2>기록 백업</h2>
+  <p>지금까지 남긴 편지를 한 번에 챙겨둘 수 있어.</p>
+  <button class="btn">백업 파일 만들기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<section id="restore" class="screen"><div class="inner modal-card">
+  <div class="eyebrow">RESTORE</div><h2>기록 복원</h2>
+  <p>예전에 백업해둔 파일을 다시 가져오면 돼.</p>
+  <div class="dropzone">백업 파일 선택</div>
+  <button class="btn">복원하기</button>
+  <button class="btn secondary" onclick="show('admin')">돌아가기</button>
+</div></section>
+
+<script>
+const SUPABASE_REST="https://bglhywysdhulofizpiuz.supabase.co/rest/v1";
+const SUPABASE_KEY="sb_publishable_vy75HU6LYmLOdBkuZh9l6w_J0PA5xlk";
+const ROOM_TOKEN="230b0bdc89ff36e5e6fe285d6e3c65f5216d2e3da4dba882";
+const FIXED_SENDER="\ub098";
+const PIN_SESSION_KEY='ourletters_pin_session_v1';
+const NAME_ME_KEY='ourletters_me_name_v1';
+const NAME_PARTNER_KEY='ourletters_partner_name_v1';
+
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));const el=document.getElementById(id);if(el)el.classList.add('on');scrollTo(0,0)}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function getDisplayName(role){if(role==='나')return localStorage.getItem(NAME_ME_KEY)||'나';if(role==='상대')return localStorage.getItem(NAME_PARTNER_KEY)||'상대';return role||''}
+function relativeAgo(ts){const d=Math.floor(Math.max(0,Date.now()-new Date(ts).getTime())/86400000);if(d<=0)return '오늘';if(d===1)return '어제';if(d<30)return d+'일 전';const m=Math.floor(d/30);if(m<12)return m+'개월 전';return Math.floor(d/365)+'년 전'}
+function headers(){return {apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}}
+async function rpc(name,body){const r=await fetch(SUPABASE_REST+'/rpc/'+name,{method:'POST',headers:headers(),body:JSON.stringify(body)});if(!r.ok)throw new Error(await r.text());return await r.json()}
+async function checkPin(next){
+  const pin=document.getElementById('pinInput').value.trim(),err=document.getElementById('pinErr');
+  if(!pin){err.textContent='번호를 입력해줘.';return}
+  try{
+    const rows=await rpc('verify_room_access',{p_token:ROOM_TOKEN,p_pin:pin});
+    if(rows.length){sessionStorage.setItem(PIN_SESSION_KEY,pin);localStorage.setItem(NAME_ME_KEY,rows[0].person_a_name||'나');localStorage.setItem(NAME_PARTNER_KEY,rows[0].person_b_name||'상대');await renderLetters();show(next)}
+    else err.textContent='번호가 맞지 않아.';
+  }catch(e){console.error(e);err.textContent='잠깐 문제가 생겼어. 다시 해봐.'}
+}
+async function loadLetters(){const pin=sessionStorage.getItem(PIN_SESSION_KEY);if(!pin)return [];return await rpc('get_letters',{p_token:ROOM_TOKEN,p_pin:pin})}
+async function renderLetters(){
+  const box=document.getElementById('letterList');if(!box)return;
+  try{
+    const list=(await loadLetters()).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    const mood=document.getElementById('archiveMood'),count=document.getElementById('archiveCount'),memory=document.getElementById('memorySpot');
+    if(mood)mood.textContent=list.length<=1?'첫 번째 말을 남긴 날부터':list.length<8?'조금씩, 우리의 말이 쌓이고 있어.':list.length<20?'말하지 못한 것들이 제법 쌓였다.':'우리도 꽤 많은 시간을 여기 남겼네.';
+    if(count)count.textContent=list.length?'지금까지 서로에게 남긴 편지 '+list.length+'개':'아직 첫 편지를 기다리는 중';
+    if(memory){if(list.length>=8){const old=list[list.length-1];memory.innerHTML='<div class="memory-label">그때 우리가 남긴 말</div><div class="memory-card"><div class="memory-date">'+relativeAgo(old.created_at)+'</div><b>'+esc(old.title||'그날의 말')+'</b><p>'+esc((old.body||'').replace(/\n/g,' ').slice(0,70))+((old.body||'').length>70?'…':'')+'</p></div>'}else memory.innerHTML=''}
+    if(!list.length){box.innerHTML='<div class="card"><p>아직 남겨진 편지가 없어.<br>첫 번째 말을 남겨볼까.</p></div>';return}
+    let html='';
+    list.forEach((x,i)=>{html+='<article class="letter '+(x.sender==='나'?'mine':'theirs')+'"><div class="letter-head"><div class="sender-badge">'+esc(getDisplayName(x.sender))+'</div><time>'+new Date(x.created_at).toLocaleString('ko-KR')+'</time></div><h3>'+esc(x.title||'오늘 남긴 말')+'</h3><p>'+esc(x.body)+'</p></article>';if(i<list.length-1){const days=Math.floor((new Date(x.created_at)-new Date(list[i+1].created_at))/86400000);if(days>=2)html+='<div class="time-gap"><span>그리고 '+days+'일 뒤,</span></div>'}});
+    box.innerHTML=html;
+  }catch(e){console.error(e);box.innerHTML='<div class="card"><p>편지를 불러오지 못했어.<br>잠깐 뒤에 다시 열어봐.</p></div>'}
+}
+async function saveLetter(){
+ const title=document.getElementById('letterTitle').value.trim(),body=document.getElementById('letterBody').value.trim(),err=document.getElementById('writeErr'),pin=sessionStorage.getItem(PIN_SESSION_KEY);
+ if(!body){err.textContent='한 줄만 남겨도 돼.';return} if(!pin){show('lock');return}
+ try{await rpc('add_letter',{p_token:ROOM_TOKEN,p_pin:pin,p_sender:FIXED_SENDER,p_title:title,p_body:body});document.getElementById('letterTitle').value='';document.getElementById('letterBody').value='';err.textContent='';await renderLetters();show('inbox')}catch(e){console.error(e);err.textContent='저장이 안 됐어. 다시 한번 해봐.'}
+}
+
+let tapCount=0,timer=null;window.addEventListener('DOMContentLoaded',()=>{const t=document.getElementById('adminTap');t.addEventListener('click',()=>{tapCount++;clearTimeout(timer);timer=setTimeout(()=>tapCount=0,1600);if(tapCount>=5){tapCount=0;show('adminLock');setTimeout(loadAdminNames,0)}});});</script></body></html>
