@@ -801,6 +801,69 @@ body:after{opacity:.08!important}
 #restoreFileName{margin:8px 0 0;text-align:center}
 .notice:empty{display:none}
 
+
+/* letter manager */
+.manager-list{
+  display:grid;
+  gap:12px;
+  margin:16px 0 20px;
+}
+.manager-letter{
+  position:relative;
+  padding:16px;
+  border-radius:18px;
+  background:rgba(250,250,247,.94);
+  border:1px solid #d8dad2;
+  box-shadow:0 8px 22px rgba(54,61,56,.05);
+}
+.manager-letter-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.manager-letter-top>div{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.manager-letter time{
+  font-size:9px;
+  color:#92958f;
+}
+.manager-sender{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#e8eee9;
+  color:#566b61;
+  font-size:10px;
+  font-weight:900;
+}
+.manager-letter h3{
+  margin:12px 0 7px;
+  font-size:17px;
+  letter-spacing:-.03em;
+}
+.manager-letter p{
+  margin:0;
+  font-size:12px;
+  line-height:1.7;
+  color:#73766f;
+}
+.delete-letter-btn{
+  flex:0 0 auto;
+  border:1px solid #d9c2bb;
+  background:#f7ece8;
+  color:#94574b;
+  border-radius:11px;
+  padding:7px 10px;
+  font-size:10px;
+  font-weight:900;
+}
+
 </style></head><body>
 <section id="open" class="screen on">
   <div class="inner opening-inner">
@@ -945,9 +1008,28 @@ body:after{opacity:.08!important}
       </div>
     </div>
 
+    
     <div class="admin-group">
       <div class="admin-group-head">
         <span>04</span>
+        <div>
+          <b>편지 관리</b>
+          <small>필요한 것만 조용히 정리</small>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <strong>편지 목록</strong>
+          <span>잘못 남긴 편지나 테스트 편지를 지워.</span>
+        </div>
+        <button class="setting-btn" type="button" onclick="openLetterManager()">보기</button>
+      </div>
+    </div>
+
+<div class="admin-group">
+      <div class="admin-group-head">
+        <span>05</span>
         <div>
           <b>기록</b>
           <small>혹시 몰라서 챙겨두는 곳</small>
@@ -1063,6 +1145,20 @@ body:after{opacity:.08!important}
   <button class="btn" type="button" onclick="restoreBackup()">복원하기</button>
   <button class="btn secondary" type="button" onclick="show('admin')">돌아가기</button>
 </div></section>
+
+
+<section id="letterManager" class="screen">
+  <div class="inner modal-card">
+    <div class="eyebrow">LETTER MANAGER</div>
+    <h2>편지 관리</h2>
+    <p>지우면 다시 돌아오지 않아. 필요한 것만 정리하자.</p>
+    <div id="managerMsg" class="notice"></div>
+    <div id="managerList" class="manager-list">
+      <div class="card"><p>불러오는 중…</p></div>
+    </div>
+    <button class="btn secondary" type="button" onclick="show('admin')">돌아가기</button>
+  </div>
+</section>
 
 <script>
 
@@ -1652,6 +1748,83 @@ async function restoreBackup(){
     msg.textContent='백업 파일을 확인하지 못했어.';
   }
 }
+
+
+/* ---------- Letter manager ---------- */
+
+async function openLetterManager(){
+  const pin=requireAdminPin();
+  if(!pin)return;
+
+  const list=document.getElementById('managerList');
+  const msg=document.getElementById('managerMsg');
+  msg.textContent='';
+  list.innerHTML='<div class="card"><p>불러오는 중…</p></div>';
+  show('letterManager');
+
+  try{
+    const letters=await loadLetters();
+
+    if(!Array.isArray(letters)||!letters.length){
+      list.innerHTML='<div class="card"><p>정리할 편지가 없어.</p></div>';
+      return;
+    }
+
+    list.innerHTML=letters
+      .slice()
+      .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+      .map(x=>{
+        const preview=esc((x.body||'').replace(/\n/g,' ').slice(0,90));
+        const displaySender=esc(getDisplayName(x.sender));
+        return `
+          <article class="manager-letter" data-id="${x.id}">
+            <div class="manager-letter-top">
+              <div>
+                <span class="manager-sender">${displaySender}</span>
+                <time>${new Date(x.created_at).toLocaleString('ko-KR')}</time>
+              </div>
+              <button class="delete-letter-btn" type="button" onclick="deleteManagedLetter(${x.id})">삭제</button>
+            </div>
+            <h3>${esc(x.title||'오늘 남긴 말')}</h3>
+            <p>${preview}${(x.body||'').length>90?'…':''}</p>
+          </article>`;
+      })
+      .join('');
+  }catch(e){
+    console.error(e);
+    list.innerHTML='<div class="card"><p>편지 목록을 불러오지 못했어.</p></div>';
+  }
+}
+
+async function deleteManagedLetter(letterId){
+  const pin=requireAdminPin();
+  if(!pin)return;
+
+  const ok=confirm('이 편지를 정말 지울까?\n지우면 다시 돌아오지 않아.');
+  if(!ok)return;
+
+  const msg=document.getElementById('managerMsg');
+
+  try{
+    const deleted=await rpc('delete_letter_admin',{
+      p_token:ROOM_TOKEN,
+      p_admin_pin:pin,
+      p_letter_id:letterId
+    });
+
+    if(deleted===true){
+      msg.textContent='지웠어.';
+      await openLetterManager();
+      await renderLetters();
+    }else{
+      msg.textContent='지우지 못했어. 관리자 인증을 다시 확인해줘.';
+    }
+  }catch(e){
+    console.error(e);
+    msg.textContent='삭제 중 문제가 생겼어.';
+  }
+}
+
 
 /* ---------- Hidden admin gesture ---------- */
 
